@@ -1,0 +1,8 @@
+{
+  "gigs": [
+    { "date": "2026-12-05", "venue": "Snövit", "city": "Stockholm", "link": null },
+    { "date": "2026-11-28", "venue": "Kafe De Luxe", "city": "Växjö", "link": null },
+    { "date": "2026-09-30", "venue": "Kaliber Room", "city": "Uppsala", "link": null },
+    { "date": "2025-06-13", "venue": "Lampas Värld", "city": "Växbo", "link": null }
+  ]
+}
