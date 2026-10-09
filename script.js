@@ -217,6 +217,14 @@
   const slots = [...document.querySelectorAll('.polaroids[data-slot]')];
   if (!slots.length) return;
   const TILT = [-4, 3, -2, 5, -3, 2, -5, 4];
+  const MONTHS = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
+  // Handskriven text nedtill på kortet: medietyp och datum.
+  function captionFor(item) {
+    const [y, m, d] = (item.timestamp || '').slice(0, 10).split('-').map(Number);
+    const date = y ? `${d} ${MONTHS[m - 1]} ${y}` : '';
+    const kind = item.media_type === 'VIDEO' ? 'Video' : item.media_type ? 'Foto' : '';
+    return [kind, date].filter(Boolean).join(' · ');
+  }
   fetch('data/gallery.json', { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     .then(({ items }) => {
@@ -235,7 +243,10 @@
         img.alt = item.alt || 'Bild från häst';
         img.loading = 'lazy';
         img.decoding = 'async';
-        a.append(img);
+        const caption = document.createElement('span');
+        caption.className = 'polaroid-caption';
+        caption.textContent = captionFor(item);
+        a.append(img, caption);
         wrap.replaceChildren(a);
         wrap.hidden = false;
       });

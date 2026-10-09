@@ -47,7 +47,12 @@ async function imageUrl(post) {
 await mkdir(outDir, { recursive: true });
 let added = 0;
 for (const post of posts) {
-  if (known.has(post.id)) continue;
+  if (known.has(post.id)) {
+    // Fyll i medietyp för bilder som hämtades innan vi sparade den.
+    const item = known.get(post.id);
+    if (!item.media_type) item.media_type = post.media_type;
+    continue;
+  }
   const src = await imageUrl(post);
   if (!src) continue;
   const img = await fetch(src);
@@ -61,6 +66,7 @@ for (const post of posts) {
     alt: '',
     permalink: post.permalink,
     timestamp: post.timestamp,
+    media_type: post.media_type,
     approved: true,
   });
   added++;
