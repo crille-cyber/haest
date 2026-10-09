@@ -1,0 +1,37 @@
+name: Synka Instagram-bilder
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # varje dag kl. 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Hämta nya bilder
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+        run: node scripts/sync-instagram.mjs
+
+      - name: Spara ändringar
+        run: |
+          git config user.name "haest-sync"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/gallery data/gallery.json
+          if git diff --cached --quiet; then
+            echo "Inga nya bilder."
+          else
+            git commit -m "Synka Instagram-bilder"
+            git push
+          fi
