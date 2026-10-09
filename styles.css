@@ -104,7 +104,7 @@ footer .email{position:static;display:inline-block;margin:24px 0 0 4%;font-size:
 footer .footer-bottom{margin-top:32px}
 
 /* häst: polaroidkort utspridda mellan sektionerna. Svartvita tills hover, då de vickar som Akta-skylten och får färg. */
-.polaroids{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 24px;padding:48px 31% 48px 4%;border-top:3px solid var(--ink);align-items:start}
+.polaroids{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:20px 28px;padding:40px 31% 40px 4%;align-items:start;justify-content:start}
 .polaroids[hidden]{display:none}
 .polaroid{display:block;background:#fff;padding:10px 10px 44px;box-shadow:0 4px 10px rgba(16,19,16,.25);transform:translateY(var(--lift)) rotate(var(--tilt));transform-origin:50% 0;filter:grayscale(1);transition:filter .4s ease;text-decoration:none}
 .polaroid img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
@@ -115,7 +115,10 @@ footer .footer-bottom{margin-top:32px}
   50%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * 1.2))}
   75%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * -.8))}
 }
-@media (max-width:700px){.polaroids{grid-template-columns:repeat(2,1fr);padding:32px 16px}}
+.polaroids[data-slot="2"]{padding-left:22%}
+.polaroids[data-slot="3"]{padding-left:8%}
+.polaroids[data-slot="4"]{padding-left:30%}
+@media (max-width:700px){.polaroids,.polaroids[data-slot]{grid-template-columns:repeat(2,minmax(0,1fr));padding:24px 16px}}
 @media (prefers-reduced-motion:reduce){.polaroid:hover{animation:none}}
 
 /* häst: Skjut mig nu på ett lime-kort som Akta, i en annan vinkel */
