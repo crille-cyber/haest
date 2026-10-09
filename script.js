@@ -254,3 +254,15 @@
     })
     .catch(err => console.error('galleri:', err));
 })();
+
+// häst: på mobil flyttas kort 4, 5 och 7 ut ur sina sektioner, så varje par ligger mellan två sektioner.
+(() => {
+  if (!window.matchMedia('(max-width: 700px)').matches) return;
+  const slot = n => document.querySelector(`.polaroids[data-slot="${n}"]`);
+  const quotes = document.querySelector('.quotes-section');
+  const song = document.getElementById('skjut-mig');
+  const footer = document.getElementById('contact');
+  if (quotes && slot(4)) quotes.before(slot(4));
+  if (song && slot(5)) song.before(slot(5));
+  if (footer && slot(7)) footer.before(slot(7));
+})();

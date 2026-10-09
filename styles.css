@@ -4,7 +4,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 
 /* Individually placed letterforms preserve the reference's irregular scale. */
-@media(min-width:701px){.surname{top:0;left:0;width:70.6%;height:62cqw;overflow:hidden;font-size:35cqw;letter-spacing:-2cqw}.surname span{position:absolute;top:-6cqw;line-height:.88;transform-origin:left top}.surname .letter-s{left:-1.5cqw;transform:scaleX(.83)}.surname .letter-a{left:16.4cqw;top:2.7cqw;font-size:45cqw;transform:scale(.7,1.65)}.surname .letter-i{left:31.7cqw;transform:scaleX(.68)}.surname .letter-n{left:37cqw;transform:scaleX(.69)}.surname .letter-z{left:54.3cqw;transform:scaleX(.8)}.one{left:77%;transform:scaleX(.35)}.bilia h2{font-size:6.5cqw}}
+@media(min-width:0px){.surname{top:0;left:0;width:70.6%;height:62cqw;overflow:hidden;font-size:35cqw;letter-spacing:-2cqw}.surname span{position:absolute;top:-6cqw;line-height:.88;transform-origin:left top}.surname .letter-s{left:-1.5cqw;transform:scaleX(.83)}.surname .letter-a{left:16.4cqw;top:2.7cqw;font-size:45cqw;transform:scale(.7,1.65)}.surname .letter-i{left:31.7cqw;transform:scaleX(.68)}.surname .letter-n{left:37cqw;transform:scaleX(.69)}.surname .letter-z{left:54.3cqw;transform:scaleX(.8)}.one{left:77%;transform:scaleX(.35)}.bilia h2{font-size:6.5cqw}}
 
 @media(min-width:701px){.surname .letter-a{top:-1.6cqw;transform:scale(.55,1.8)}.one{left:81.3%}.ideas,.platforms{background:var(--paper);padding:3px 4px}.location{background:var(--ink);padding:2px;width:8.5%}.fass-outcome{background:var(--paper);padding:3px;width:fit-content}}
 @media(min-width:701px){.one{left:83.8%;top:24.8cqw;width:15.6%;height:65.1cqw;background:var(--ink);font-size:0;transform:none;clip-path:polygon(0 16%,73% 0,100% 0,100% 100%,36% 100%,36% 21%,0 28%)}footer h2{font-size:34.2cqw}}
@@ -140,7 +140,41 @@ footer .footer-bottom{margin-top:32px}
 }
 /* häst: mobil. Bara de två korten uppe vid logotypen, och inga rälsetiketter som ligger över text. */
 @media (max-width:700px){
-  .polaroids:not([data-slot="1"]):not([data-slot="2"]){display:none}
   .project-rail a span,.project-rail a strong,.project-rail i{display:none}
 }
 @media (max-width:700px){.bilia p{position:relative;left:auto;top:auto;width:auto;margin:3cqw 0 0}}
+/* häst: mobil. Namnet och menyn syns helt, och de två korten uppe vid logotypen låses till collagens topp (aldrig över gig-listan). */
+@media (max-width:700px){
+  .surname{top:0;left:0;width:70.6%;height:62cqw;font-size:35cqw;letter-spacing:-2cqw;overflow:hidden}
+  .main-nav{position:absolute;right:4%;top:4cqw;width:auto;height:auto;padding:2.5cqw 3.5cqw;gap:14px}
+  .main-nav:before{inset:1.2cqw}
+  .main-nav a{font-size:max(14px,4.2cqw)}
+  .polaroids[data-slot="1"],.polaroids[data-slot="2"]{position:absolute;left:0;right:0;top:0;height:0}
+}
+/* häst: mobil. De två korten flyttas till tomma ytor, så de inte täcker namnet, menyn eller gig-listan mer än lite. */
+@media (max-width:700px){
+  .polaroids[data-slot="1"] .polaroid{left:6%!important;top:26cqw!important}
+  .polaroids[data-slot="2"] .polaroid{left:58%!important;top:34cqw!important}
+}
+/* häst: mobil. Menyn ligger under namnet, till vänster, så rälsen inte täcker den. */
+@media (max-width:700px){
+  .main-nav{left:4%;right:auto;top:17cqw}
+  .polaroids[data-slot="1"] .polaroid{top:28cqw!important}
+}
+
+/* häst: mobil. Kort 3 till 8 ligger i tre par mellan sektionerna, med egen yta så de inte täcker text. */
+@media (max-width:700px){
+  .polaroids[data-slot="3"],.polaroids[data-slot="4"],.polaroids[data-slot="5"],.polaroids[data-slot="6"],.polaroids[data-slot="7"],.polaroids[data-slot="8"]{position:relative;height:72cqw;margin:0;padding:0}
+  .polaroids[data-slot="3"] .polaroid{left:6%!important;top:6cqw!important}
+  .polaroids[data-slot="4"] .polaroid{left:56%!important;top:16cqw!important}
+  .polaroids[data-slot="5"] .polaroid{left:10%!important;top:6cqw!important}
+  .polaroids[data-slot="6"] .polaroid{left:60%!important;top:10cqw!important}
+  .polaroids[data-slot="7"] .polaroid{left:8%!important;top:6cqw!important}
+  .polaroids[data-slot="8"] .polaroid{left:56%!important;top:14cqw!important}
+}
+/* häst: mobil. Namnet ska synas. Menyn ligger under det, korten bredvid. */
+@media (max-width:700px){
+  .main-nav{top:62cqw;left:4%}
+  .polaroids[data-slot="1"] .polaroid{left:52%!important;top:4cqw!important}
+  .polaroids[data-slot="2"] .polaroid{left:62%!important;top:44cqw!important}
+}
