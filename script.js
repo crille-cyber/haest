@@ -8,7 +8,8 @@
   const links = [...rail.querySelectorAll('a')];
   const targets = ['.fass', '.hemkop', '.rekord', '#citat', '#skjut-mig', '#contact'].map(s => document.querySelector(s));
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const mobile = window.matchMedia('(max-width: 700px)');
+  // Mobil använder samma hissläge som desktop. Ingen separat mobil-layout.
+  const mobile = window.matchMedia('(max-width: 0px)');
   const clamp = (n, a = 0, b = 1) => Math.max(a, Math.min(b, n));
   const ease = n => n * n * (3 - 2 * n);
   let layout, queued = false;
