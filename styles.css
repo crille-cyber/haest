@@ -103,25 +103,19 @@ footer .footer-bottom{padding-right:0}
 footer .email{position:static;display:inline-block;margin:24px 0 0 4%;font-size:clamp(18px,2.2cqw,28px)}
 footer .footer-bottom{margin-top:32px}
 
-/* häst: polaroidkort utspridda mellan sektionerna. Svartvita tills hover, då de vickar som Akta-skylten och får färg. */
-.polaroids{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:20px 28px;padding:40px 31% 40px 4%;align-items:start;justify-content:start}
+/* häst: polaroidkort, ett i taget, utspridda över sidans kanter. Svartvita tills hover, då de får färg och lutar lite mindre, som Akta-boxen. */
+.polaroids{position:relative;z-index:2;margin:var(--top,0) 0 0;padding:0 0 0 var(--x,4%);max-width:100%}
 .polaroids[hidden]{display:none}
-.polaroid{display:block;background:#fff;padding:10px 10px 44px;box-shadow:0 4px 10px rgba(16,19,16,.25);transform:translateY(var(--lift)) rotate(var(--tilt));transform-origin:50% 0;filter:grayscale(1);transition:filter .4s ease;text-decoration:none}
+.polaroid{display:inline-block;width:190px;background:#fff;padding:10px 10px 44px;box-shadow:none;transform:rotate(var(--tilt));transform-origin:50% 0;filter:grayscale(1);transition:transform .35s ease,filter .4s ease;text-decoration:none;vertical-align:top}
 .polaroid img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.polaroid:hover,.polaroid:focus-visible{filter:grayscale(0);animation:sway 1.1s ease-in-out infinite}
-@keyframes sway{
-  0%,100%{transform:translateY(var(--lift)) rotate(var(--tilt))}
-  25%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * -1.6))}
-  50%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * 1.2))}
-  75%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * -.8))}
-}
-.polaroids[data-slot="2"]{padding-left:22%}
-.polaroids[data-slot="3"]{padding-left:8%}
-.polaroids[data-slot="4"]{padding-left:30%}
-@media (max-width:700px){.polaroids,.polaroids[data-slot]{grid-template-columns:repeat(2,minmax(0,1fr));padding:24px 16px}}
-@media (prefers-reduced-motion:reduce){.polaroid:hover{animation:none}}
+.polaroid:hover,.polaroid:focus-visible{filter:grayscale(0);transform:rotate(calc(var(--tilt) * .75))}
+@media (max-width:700px){.polaroids{padding-left:16px}.polaroid{width:150px;padding:8px 8px 34px}}
 
 /* häst: Skjut mig nu på ett lime-kort som Akta, i en annan vinkel */
 .song-card{background:var(--lime);transform:rotate(-4deg);transform-origin:center;padding:24px 28px 28px;margin:24px 0 8px;max-width:none}
 .song-card h2{font-family:'Arial Black',Arial,sans-serif;font-size:clamp(40px,8cqw,104px);line-height:.9;margin:0 0 16px;text-transform:uppercase;letter-spacing:-.02em}
 .song-card .spotify-live{transform:none}
+
+/* häst: Skjut mig nu-kortet har samma hover som Akta-boxen: lutningen minskar, med mjuk övergång */
+.song-card{transition:transform .35s ease}
+.song-card:hover{transform:rotate(-3deg)}
