@@ -212,27 +212,36 @@
 });
 })();
 
-// häst: bildgalleriet visar bara bilder med approved:true i data/gallery.json.
+// häst: polaroidkorten visar de 8 senaste godkända bilderna från data/gallery.json.
+// Varje kort länkar till inlägget på Instagram.
 (() => {
-  const section = document.getElementById('galleri');
-  const grid = document.getElementById('gallery-grid');
-  if (!section || !grid) return;
+  const wrap = document.getElementById('polaroids');
+  if (!wrap) return;
+  const TILT = [-4, 3, -2, 5, -3, 2, -5, 4];
+  const LIFT = [0, 26, 8, 40, 14, 30, 4, 22];
   fetch('data/gallery.json', { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     .then(({ items }) => {
-      const shown = items.filter(i => i.approved && i.src);
-      if (!shown.length) return; // ingen godkänd bild: sektionen förblir dold
-      grid.replaceChildren(...shown.map(item => {
-        const fig = document.createElement('figure');
+      const shown = items.filter(i => i.approved && i.src && i.permalink).slice(0, 8);
+      if (!shown.length) return;
+      wrap.replaceChildren(...shown.map((item, n) => {
+        const a = document.createElement('a');
+        a.className = 'polaroid';
+        a.href = item.permalink;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('aria-label', `${item.alt || 'Bild från häst'}, öppnas på Instagram`);
+        a.style.setProperty('--tilt', `${TILT[n % 8]}deg`);
+        a.style.setProperty('--lift', `${LIFT[n % 8]}px`);
         const img = document.createElement('img');
         img.src = item.src;
         img.alt = item.alt || 'Bild från häst';
         img.loading = 'lazy';
         img.decoding = 'async';
-        fig.append(img);
-        return fig;
+        a.append(img);
+        return a;
       }));
-      section.hidden = false;
+      wrap.hidden = false;
     })
     .catch(err => console.error('galleri:', err));
 })();

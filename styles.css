@@ -103,13 +103,22 @@ footer .footer-bottom{padding-right:0}
 footer .email{position:static;display:inline-block;margin:24px 0 0 4%;font-size:clamp(18px,2.2cqw,28px)}
 footer .footer-bottom{margin-top:32px}
 
-/* häst: bildgalleri, bara godkända bilder (data/gallery.json) */
-.gallery-block{max-width:none;margin:0;padding:40px 31% 40px 4%;border-top:3px solid var(--ink)}
-.gallery-block[hidden]{display:none}
-.gallery-block h2{font-family:'Arial Black',Arial,sans-serif;font-size:clamp(28px,4.5cqw,56px);margin:0 0 16px;text-transform:uppercase}
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.gallery-grid figure{margin:0}
-.gallery-grid img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border:2px solid var(--ink);background:#fff}
-.gallery-follow{margin:16px 0 0;font-weight:700}
-@media (max-width:700px){.gallery-block{padding:32px 16px}}
-.footer-bottom .credit a{text-underline-offset:4px}
+/* häst: polaroidkort utspridda mellan sektionerna. Svartvita tills hover, då de vickar som Akta-skylten och får färg. */
+.polaroids{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 24px;padding:48px 31% 48px 4%;border-top:3px solid var(--ink);align-items:start}
+.polaroids[hidden]{display:none}
+.polaroid{display:block;background:#fff;padding:10px 10px 44px;box-shadow:0 4px 10px rgba(16,19,16,.25);transform:translateY(var(--lift)) rotate(var(--tilt));transform-origin:50% 0;filter:grayscale(1);transition:filter .4s ease;text-decoration:none}
+.polaroid img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.polaroid:hover,.polaroid:focus-visible{filter:grayscale(0);animation:sway 1.1s ease-in-out infinite}
+@keyframes sway{
+  0%,100%{transform:translateY(var(--lift)) rotate(var(--tilt))}
+  25%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * -1.6))}
+  50%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * 1.2))}
+  75%{transform:translateY(var(--lift)) rotate(calc(var(--tilt) * -.8))}
+}
+@media (max-width:700px){.polaroids{grid-template-columns:repeat(2,1fr);padding:32px 16px}}
+@media (prefers-reduced-motion:reduce){.polaroid:hover{animation:none}}
+
+/* häst: Skjut mig nu på ett lime-kort som Akta, i en annan vinkel */
+.song-card{background:var(--lime);transform:rotate(-4deg);transform-origin:center;padding:24px 28px 28px;margin:24px 0 8px;max-width:none}
+.song-card h2{font-family:'Arial Black',Arial,sans-serif;font-size:clamp(40px,8cqw,104px);line-height:.9;margin:0 0 16px;text-transform:uppercase;letter-spacing:-.02em}
+.song-card .spotify-live{transform:none}
