@@ -1,5 +1,5 @@
 // Hämtar bilder från Instagram (Graph API) till assets/gallery/ och uppdaterar data/gallery.json.
-// Nya bilder kommer in med approved:false. Sätt approved:true på de som ska visas i galleriet.
+// Alla nya bilder godkänns automatiskt. Ta bort en bild genom att radera dess rad i data/gallery.json och filen i assets/gallery/.
 // Kör: IG_USER_ID=... IG_TOKEN=... node scripts/sync-instagram.mjs
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -19,7 +19,7 @@ const current = existsSync(galleryPath) ? JSON.parse(await readFile(galleryPath,
 const known = new Map(current.items.map(i => [i.id, i]));
 
 // Bara bilder (IMAGE). Karuseller och videor hoppas över tills vi behöver dem.
-let url = `https://graph.facebook.com/v21.0/${IG_USER_ID}/media?fields=id,media_type,media_url,permalink,timestamp&limit=50&access_token=${encodeURIComponent(IG_TOKEN)}`;
+let url = `https://graph.instagram.com/v21.0/${IG_USER_ID}/media?fields=id,media_type,media_url,permalink,timestamp&limit=50&access_token=${encodeURIComponent(IG_TOKEN)}`;
 const posts = [];
 while (url && posts.length < 200) {
   const res = await fetch(url);
@@ -44,7 +44,7 @@ for (const post of posts) {
     alt: '',
     permalink: post.permalink,
     timestamp: post.timestamp,
-    approved: false,
+    approved: true,
   });
   added++;
 }
