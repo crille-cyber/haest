@@ -18,22 +18,39 @@ const outDir = path.join(root, 'assets/gallery');
 const current = existsSync(galleryPath) ? JSON.parse(await readFile(galleryPath, 'utf8')) : { items: [] };
 const known = new Map(current.items.map(i => [i.id, i]));
 
-// Bara bilder (IMAGE). Karuseller och videor hoppas över tills vi behöver dem.
-let url = `https://graph.instagram.com/v21.0/${IG_USER_ID}/media?fields=id,media_type,media_url,permalink,timestamp&limit=50&access_token=${encodeURIComponent(IG_TOKEN)}`;
+// Bilder, videor (miniatyr) och karuseller (första bilden).
+let url = `https://graph.instagram.com/v21.0/${IG_USER_ID}/media?fields=id,media_type,media_url,thumbnail_url,permalink,timestamp&limit=50&access_token=${encodeURIComponent(IG_TOKEN)}`;
 const posts = [];
 while (url && posts.length < 200) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Graph API svarade ${res.status}. Kontrollera token och konto.`);
   const page = await res.json();
-  posts.push(...page.data.filter(m => m.media_type === 'IMAGE' && m.media_url));
+  posts.push(...page.data);
   url = page.paging?.next || null;
+}
+
+// Ger URL till en bild för inlägget, eller null om det inte går.
+async function imageUrl(post) {
+  if (post.media_type === 'IMAGE') return post.media_url;
+  if (post.media_type === 'VIDEO') return post.thumbnail_url || null;
+  if (post.media_type === 'CAROUSEL_ALBUM') {
+    const res = await fetch(`https://graph.instagram.com/v21.0/${post.id}/children?fields=media_type,media_url,thumbnail_url&access_token=${encodeURIComponent(IG_TOKEN)}`);
+    if (!res.ok) return null;
+    const { data = [] } = await res.json();
+    const first = data.find(c => c.media_type === 'IMAGE') || data[0];
+    if (!first) return null;
+    return first.media_type === 'VIDEO' ? first.thumbnail_url : first.media_url;
+  }
+  return null;
 }
 
 await mkdir(outDir, { recursive: true });
 let added = 0;
 for (const post of posts) {
   if (known.has(post.id)) continue;
-  const img = await fetch(post.media_url);
+  const src = await imageUrl(post);
+  if (!src) continue;
+  const img = await fetch(src);
   if (!img.ok) continue;
   const ext = (img.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg';
   const file = `${post.id}.${ext}`;
