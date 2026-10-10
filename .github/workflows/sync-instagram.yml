@@ -18,6 +18,21 @@ jobs:
         with:
           node-version: 22
 
+      - name: Förnya token
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+        run: |
+          res=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_TOKEN")
+          new=$(echo "$res" | jq -r '.access_token // empty')
+          exp=$(echo "$res" | jq -r '.expires_in // empty')
+          if [ -z "$new" ]; then
+            echo "Kunde inte förnya token: $(echo "$res" | jq -r '.error.message // "okänt fel"')"
+          elif [ "$new" = "$IG_TOKEN" ]; then
+            echo "Token förnyad. Samma token. Gäller i $exp sekunder."
+          else
+            echo "Token förnyad. NY token (uppdatera IG_TOKEN). Gäller i $exp sekunder."
+          fi
+
       - name: Hämta nya bilder
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
