@@ -18,25 +18,38 @@ jobs:
         with:
           node-version: 22
 
+      # Förnyar Instagram-token (gäller 60 dagar) och sparar den nya som hemligheten IG_TOKEN.
+      # Spara kräver hemligheten GH_PAT (fine-grained token med Secrets: Read and write för det här repot).
+      # Om förnyelsen misslyckas används nuvarande token vidare.
       - name: Förnya token
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           res=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_TOKEN")
           new=$(echo "$res" | jq -r '.access_token // empty')
           exp=$(echo "$res" | jq -r '.expires_in // empty')
+          token="$IG_TOKEN"
           if [ -z "$new" ]; then
-            echo "Kunde inte förnya token: $(echo "$res" | jq -r '.error.message // "okänt fel"')"
-          elif [ "$new" = "$IG_TOKEN" ]; then
-            echo "Token förnyad. Samma token. Gäller i $exp sekunder."
+            echo "Kunde inte förnya token, använder nuvarande: $(echo "$res" | jq -r '.error.message // "okänt fel"')"
           else
-            echo "Token förnyad. NY token (uppdatera IG_TOKEN). Gäller i $exp sekunder."
+            echo "::add-mask::$new"
+            token="$new"
+            if [ -n "$GH_PAT" ]; then
+              if printf %s "$new" | GH_TOKEN="$GH_PAT" gh secret set IG_TOKEN --repo "$GITHUB_REPOSITORY"; then
+                echo "Ny token sparad som IG_TOKEN. Gäller i $exp sekunder."
+              else
+                echo "Kunde inte spara ny token. Kontrollera att GH_PAT har Secrets: Read and write."
+              fi
+            else
+              echo "Token förnyad, men GH_PAT saknas så den sparas inte. Gäller i $exp sekunder."
+            fi
           fi
+          echo "IG_TOKEN=$token" >> "$GITHUB_ENV"
 
       - name: Hämta nya bilder
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          IG_TOKEN: ${{ secrets.IG_TOKEN }}
         run: node scripts/sync-instagram.mjs
 
       - name: Spara ändringar
