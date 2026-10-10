@@ -23,7 +23,11 @@ let url = `https://graph.instagram.com/v21.0/${IG_USER_ID}/media?fields=id,media
 const posts = [];
 while (url && posts.length < 200) {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Graph API svarade ${res.status}. Kontrollera token och konto.`);
+  if (!res.ok) {
+    // Visa Metas felmeddelande (utan token) så vi ser varför det går fel.
+    const body = (await res.text()).replace(/access_token=[^&"\s]+/g, 'access_token=***').slice(0, 400);
+    throw new Error(`Graph API svarade ${res.status}: ${body}`);
+  }
   const page = await res.json();
   posts.push(...page.data);
   url = page.paging?.next || null;
