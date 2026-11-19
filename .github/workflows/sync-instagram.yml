@@ -8,13 +8,18 @@ on:
 permissions:
   contents: write
 
+# Samma grupp i båda jobben som skriver till main, så de aldrig krockar.
+concurrency:
+  group: main-writer
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
 
@@ -31,7 +36,7 @@ jobs:
           exp=$(echo "$res" | jq -r '.expires_in // empty')
           token="$IG_TOKEN"
           if [ -z "$new" ]; then
-            echo "Kunde inte förnya token, använder nuvarande: $(echo "$res" | jq -r '.error.message // "okänt fel"')"
+            echo "::warning title=Instagram-token::Kunde inte förnya token, använder nuvarande: $(echo "$res" | jq -r '.error.message // "okänt fel"')"
           else
             echo "::add-mask::$new"
             token="$new"
@@ -39,13 +44,16 @@ jobs:
               if printf %s "$new" | GH_TOKEN="$GH_PAT" gh secret set IG_TOKEN --repo "$GITHUB_REPOSITORY"; then
                 echo "Ny token sparad som IG_TOKEN. Gäller i $exp sekunder."
               else
-                echo "Kunde inte spara ny token. Kontrollera att GH_PAT har Secrets: Read and write."
+                echo "::warning title=GH_PAT::Kunde inte spara ny Instagram-token. GH_PAT har troligen gått ut eller saknar Secrets: Read and write. Galleriet slutar synka när IG_TOKEN går ut."
               fi
             else
-              echo "Token förnyad, men GH_PAT saknas så den sparas inte. Gäller i $exp sekunder."
+              echo "::warning title=GH_PAT::Token förnyad, men GH_PAT saknas så den sparas inte. Galleriet slutar synka när IG_TOKEN går ut."
             fi
           fi
           echo "IG_TOKEN=$token" >> "$GITHUB_ENV"
+
+      - name: Installera ImageMagick
+        run: command -v convert >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends imagemagick)
 
       - name: Hämta nya bilder
         env:
@@ -61,5 +69,6 @@ jobs:
             echo "Inga nya bilder."
           else
             git commit -m "Synka Instagram-bilder"
+            git pull --rebase origin main
             git push
           fi

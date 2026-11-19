@@ -145,6 +145,12 @@
     rail.dataset.requestedScroll = layout.centers[i].toFixed(1);
     history.replaceState(null, '', link.getAttribute('href'));
     window.scrollTo({ top: layout.centers[i], behavior: 'instant' });
+    // Flytta fokus till sektionen så att tangentbord och skärmläsare följer med.
+    const section = document.querySelector(link.getAttribute('href'));
+    if (section) {
+      if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
+      section.focus({ preventScroll: true });
+    }
   }));
   // Image loading and typography can change mobile floor positions after first paint.
   new ResizeObserver(measure).observe(collage);
@@ -162,8 +168,9 @@
     const li = document.createElement('li');
     const past = Boolean(gig.date) && gig.date < today;
     if (past) li.classList.add('gig-past');
-    const date = document.createElement('span');
+    const date = document.createElement(gig.date ? 'time' : 'span');
     date.className = 'gig-date';
+    if (gig.date) date.dateTime = gig.date;
     date.textContent = gig.date ? fmt(gig.date) : 'Datum TBA';
     const info = document.createElement('span');
     const venue = document.createElement('span');
@@ -173,9 +180,13 @@
     city.className = 'gig-city';
     city.textContent = `, ${gig.city}`;
     info.append(venue, city);
-    if (gig.link && !past) {
+    if (gig.link && /^https:\/\//.test(gig.link) && !past) {
       const a = document.createElement('a');
       a.href = gig.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = ' biljetter →';
+      const hint = document.createElement('span');
+      hint.className = 'sr-only';
+      hint.textContent = ' (öppnas i ny flik)';
+      a.append(hint);
       info.append(a);
     }
     li.append(date, info);
@@ -187,17 +198,22 @@
       const upcoming = gigs.filter(g => g.date && g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
       const tba = gigs.filter(g => !g.date);
       const played = gigs.filter(g => g.date && g.date < today).sort((a, b) => b.date.localeCompare(a.date));
-      list.replaceChildren(...[...upcoming, ...tba, ...played].map(row));
+      const rows = [...upcoming, ...tba, ...played].map(row);
+      if (rows.length) list.replaceChildren(...rows);
     })
     .catch(err => {
-      list.innerHTML = '<li class="gig-empty">Kunde inte ladda spelningarna just nu.</li>';
+      // Listan finns redan i HTML:en från bygget. Visa bara ett fel om den är tom.
+      if (!list.children.length) list.innerHTML = '<li class="gig-empty">Kunde inte ladda spelningarna just nu.</li>';
       console.error('gigs:', err);
     });
 })();
 
 // häst: Spotify-spelare i slots. Sätt data-track="<Spotify-track-ID>" i index.html.
+// Spelarna är tunga, så de laddas först när sidan har laddat klart och spelaren närmar sig skärmen.
 (() => {
-  document.querySelectorAll('.spotify-slot[data-track]').forEach(slot => {
+  const slots = [...document.querySelectorAll('.spotify-slot[data-track]')];
+  if (!slots.length) return;
+  const load = slot => {
   const id = slot.dataset.track.trim();
   if (!/^[A-Za-z0-9]{22}$/.test(id)) return;
   const iframe = document.createElement('iframe');
@@ -210,7 +226,15 @@
   iframe.title = slot.getAttribute('aria-label') || 'Spotify';
   slot.replaceChildren(iframe);
   slot.classList.add('spotify-live');
-});
+  };
+  const start = () => {
+    if (!('IntersectionObserver' in window)) { slots.forEach(load); return; }
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { io.unobserve(e.target); load(e.target); }
+    }), { rootMargin: '300px 0px' });
+    slots.forEach(s => io.observe(s));
+  };
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start, { once: true });
 })();
 
 // häst: ett polaroidkort per plats (data-slot). Platserna i sidordning får de senaste godkända bilderna.
@@ -237,16 +261,18 @@
         a.href = item.permalink;
         a.target = '_blank';
         a.rel = 'noopener';
-        a.setAttribute('aria-label', `${item.alt || 'Bild från häst'}, öppnas på Instagram`);
-        a.style.setProperty('--tilt', `${TILT[n % TILT.length]}deg`);
-        const img = document.createElement('img');
-        img.src = item.src;
-        img.alt = item.alt || 'Bild från häst';
-        img.loading = 'lazy';
-        img.decoding = 'async';
         const caption = document.createElement('span');
         caption.className = 'polaroid-caption';
         caption.textContent = captionFor(item);
+        a.setAttribute('aria-label', `${item.alt || caption.textContent || 'Bild från häst'} på Instagram (öppnas i ny flik)`);
+        a.style.setProperty('--tilt', `${TILT[n % TILT.length]}deg`);
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = '';
+        img.width = item.width || 400;
+        img.height = item.height || 400;
+        img.loading = 'lazy';
+        img.decoding = 'async';
         a.append(img, caption);
         wrap.replaceChildren(a);
         wrap.hidden = false;

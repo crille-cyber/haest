@@ -1,24 +1,31 @@
 # häst
 
-> häst är ett grungeband från Uppsala, Sverige. Bandet spelar vrålande balader på svenska: punk-slarvig grunge med rötter i 90-talets alternativa rock.
+> häst är ett grungeband från Uppsala, Sverige, bildat 2025. Bandet spelar vrålande balader på svenska: punk-slarvig grunge.
 
 ## Om bandet
 - Hemstad: Uppsala, Sverige
+- Bildat: 2025
 - Genre: grunge, alternativ rock, punk
 - Språk: svenska
 - Sättning: bas, trummor, gitarr och sång
-- Senaste singel: "Akta" (Spotify: https://open.spotify.com/track/1VEEz3Ve9GJQIqUpxDwzvs)
-- Annan låt: "Skjut mig nu" (Spotify: https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj)
-- Lyssnare har jämfört bandet med Dungen, Pixies, Kent och Nirvana.
+- Senaste singel: "Akta" (https://open.spotify.com/track/1VEEz3Ve9GJQIqUpxDwzvs)
+- Annan låt: "Skjut mig nu" (https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj)
+- Bandet beskriver sig själva som om Nirvana kom från Eskilstuna. Lyssnare har jämfört dem med Dungen och Pixies.
+
+## Kommande spelningar
+- 28 nov 2026: Kafe De Luxe, Växjö
+- 5 dec 2026: Kulturhuset, Stockholm (biljetter: https://kulturhusetstadsteatern.se/konserter/hast-cp-westman)
+
+Alla spelningar: https://haest.se/#work
 
 ## Spel
 Bandet har gjort webbspelet Turbogalopp, gratis att spela i webbläsaren på mobil och dator: https://haest.se/turbogalopp/
 
-## Spelningar
-Aktuella spelningar finns på https://haest.se/#work och som data i https://haest.se/data/gigs.json
+## Lyssna och följ
+- Spotify: https://open.spotify.com/artist/46Y0N0k3EoQDd82sxmXX8w
+- Instagram: https://www.instagram.com/haest.se/
+- Facebook: https://www.facebook.com/haest.se/
 
 ## Kontakt och bokning
 - E-post: bandet@haest.se
-- Instagram: https://www.instagram.com/haest.se/
-- Facebook: https://www.facebook.com/haest.se/
 - Webbplats: https://haest.se/

@@ -33,7 +33,10 @@
    "@type": "MusicGroup",
    "@id": "https://haest.se/#band",
    "name": "häst",
-   "alternateName": "Häst",
+   "alternateName": [
+    "Häst",
+    "Haest"
+   ],
    "url": "https://haest.se/",
    "image": "https://haest.se/assets/og-image.jpg",
    "description": "häst är ett grungeband från Uppsala som spelar vrålande balader på svenska, punk-slarvig grunge.",
@@ -42,14 +45,21 @@
     "Alternativ rock",
     "Punk"
    ],
+   "foundingDate": "2025",
    "foundingLocation": {
     "@type": "Place",
-    "name": "Uppsala, Sverige"
+    "name": "Uppsala, Sverige",
+    "address": {
+     "@type": "PostalAddress",
+     "addressLocality": "Uppsala",
+     "addressCountry": "SE"
+    }
    },
    "email": "bandet@haest.se",
    "sameAs": [
     "https://www.facebook.com/haest.se/",
-    "https://www.instagram.com/haest.se/"
+    "https://www.instagram.com/haest.se/",
+    "https://open.spotify.com/artist/46Y0N0k3EoQDd82sxmXX8w"
    ],
    "track": [
     {
@@ -62,12 +72,7 @@
      "name": "Skjut mig nu",
      "url": "https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj"
     }
-   ],
-   "subjectOf": {
-    "@type": "VideoGame",
-    "name": "Turbogalopp",
-    "url": "https://haest.se/turbogalopp/"
-   }
+   ]
   },
   {
    "@type": "WebSite",
@@ -94,18 +99,15 @@
      "addressCountry": "SE"
     }
    },
+   "description": "häst spelar grunge på Kulturhuset i Stockholm.",
    "performer": {
-    "@id": "https://haest.se/#band"
-   },
-   "organizer": {
     "@id": "https://haest.se/#band"
    },
    "image": "https://haest.se/assets/og-image.jpg",
    "url": "https://kulturhusetstadsteatern.se/konserter/hast-cp-westman",
    "offers": {
     "@type": "Offer",
-    "url": "https://kulturhusetstadsteatern.se/konserter/hast-cp-westman",
-    "availability": "https://schema.org/InStock"
+    "url": "https://kulturhusetstadsteatern.se/konserter/hast-cp-westman"
    }
   },
   {
@@ -123,10 +125,8 @@
      "addressCountry": "SE"
     }
    },
+   "description": "häst spelar grunge på Kafe De Luxe i Växjö.",
    "performer": {
-    "@id": "https://haest.se/#band"
-   },
-   "organizer": {
     "@id": "https://haest.se/#band"
    },
    "image": "https://haest.se/assets/og-image.jpg",
@@ -147,10 +147,8 @@
      "addressCountry": "SE"
     }
    },
+   "description": "häst spelar grunge på Kaliber Room i Uppsala.",
    "performer": {
-    "@id": "https://haest.se/#band"
-   },
-   "organizer": {
     "@id": "https://haest.se/#band"
    },
    "image": "https://haest.se/assets/og-image.jpg",
@@ -171,10 +169,8 @@
      "addressCountry": "SE"
     }
    },
+   "description": "häst spelar grunge på Lampas Värld i Växbo.",
    "performer": {
-    "@id": "https://haest.se/#band"
-   },
-   "organizer": {
     "@id": "https://haest.se/#band"
    },
    "image": "https://haest.se/assets/og-image.jpg",
@@ -185,11 +181,13 @@
 </script>
 <!-- jsonld:end -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap">
-<link rel="stylesheet" href="styles.css?v=40">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap"></noscript>
+<link rel="stylesheet" href="styles.css?v=c67db6aa">
 </head>
 <body>
-<a class="skip-link" href="#about">Hoppa till innehållet</a>
+<a class="skip-link" href="#work">Hoppa till innehållet</a>
 <main class="portfolio" id="top">
 <section class="collage" aria-label="häst, galopperande grunge från Uppsala"><div class="polaroids" data-slot="1" hidden style="--x:17%;--top:4cqw"></div>
 <div class="polaroids" data-slot="2" hidden style="--x:46%;--top:2cqw"></div>
@@ -201,12 +199,12 @@
 <article class="fass project" id="work" aria-labelledby="gigs-title">
 <div class="gigs-panel">
 <div class="fass-caption"><h2 id="gigs-title">GIGS /</h2></div>
-<ol class="gig-list" id="gig-list"><!-- gigs:start --><li><time class="gig-date" datetime="2026-11-28">28 nov 2026</time><span><span class="gig-venue">Kafe De Luxe</span><span class="gig-city">, Växjö</span></span></li><li><time class="gig-date" datetime="2026-12-05">5 dec 2026</time><span><span class="gig-venue">Kulturhuset</span><span class="gig-city">, Stockholm</span><a href="https://kulturhusetstadsteatern.se/konserter/hast-cp-westman" target="_blank" rel="noopener"> biljetter →</a></span></li><li class="gig-past"><time class="gig-date" datetime="2026-09-30">30 sep 2026</time><span><span class="gig-venue">Kaliber Room</span><span class="gig-city">, Uppsala</span></span></li><li class="gig-past"><time class="gig-date" datetime="2025-06-13">13 juni 2025</time><span><span class="gig-venue">Lampas Värld</span><span class="gig-city">, Växbo</span></span></li><!-- gigs:end --></ol>
+<ol class="gig-list" id="gig-list"><!-- gigs:start --><li><time class="gig-date" datetime="2026-11-28">28 nov 2026</time><span><span class="gig-venue">Kafe De Luxe</span><span class="gig-city">, Växjö</span></span></li><li><time class="gig-date" datetime="2026-12-05">5 dec 2026</time><span><span class="gig-venue">Kulturhuset</span><span class="gig-city">, Stockholm</span><a href="https://kulturhusetstadsteatern.se/konserter/hast-cp-westman" target="_blank" rel="noopener"> biljetter →<span class="sr-only"> (öppnas i ny flik)</span></a></span></li><li class="gig-past"><time class="gig-date" datetime="2026-09-30">30 sep 2026</time><span><span class="gig-venue">Kaliber Room</span><span class="gig-city">, Uppsala</span></span></li><li class="gig-past"><time class="gig-date" datetime="2025-06-13">13 juni 2025</time><span><span class="gig-venue">Lampas Värld</span><span class="gig-city">, Växbo</span></span></li><!-- gigs:end --></ol>
 </div>
 </article>
 <section class="intro" id="about" aria-label="Om häst"><h2>Vrålande balader<br>från Uppsala.</h2><p>Uppsala <span>/</span> Grunge <span>/</span> Svenska <span>/</span> Sedan nu</p></section>
 <div class="direction-arrow" aria-hidden="true"><svg viewBox="0 0 270 65"><path d="M4 32H257M235 8l24 24-24 24"/></svg></div>
-<nav class="project-rail" aria-label="Sektioner"><a href="#work"><span>01</span><strong>GIGS</strong><i></i></a><a href="#hemkop"><span>02</span><strong>MUSIK</strong><i></i></a><a href="#rekord"><span>03</span><strong>OM</strong><i></i></a><a href="#citat"><span>04</span><strong>CITAT</strong><i></i></a><a href="#skjut-mig"><span>05</span><strong>SKJUT MIG</strong><i></i></a><a href="#contact"><span>06</span><strong>KONTAKT</strong><i></i></a>
+<nav class="project-rail" aria-label="Sektioner"><a href="#work" aria-label="Gigs"><span>01</span><strong>GIGS</strong><i></i></a><a href="#hemkop" aria-label="Musik"><span>02</span><strong>MUSIK</strong><i></i></a><a href="#rekord" aria-label="Om häst"><span>03</span><strong>OM</strong><i></i></a><a href="#citat" aria-label="Citat"><span>04</span><strong>CITAT</strong><i></i></a><a href="#skjut-mig" aria-label="Skjut mig nu"><span>05</span><strong>SKJUT MIG</strong><i></i></a><a href="#contact" aria-label="Kontakt"><span>06</span><strong>KONTAKT</strong><i></i></a>
 <div class="elevator-visual" aria-hidden="true">
   <div class="shaft-cable"></div>
   <div class="elevator-car">
@@ -220,7 +218,7 @@
 </div></nav>
 <article class="hemkop project" id="hemkop" aria-labelledby="hemkop-title"><span class="hemkop-index">02 /</span><h2 id="hemkop-title">AKTA</h2><div class="spotify-slot" data-track="1VEEz3Ve9GJQIqUpxDwzvs" data-height="80" role="region" aria-label="Spelare för Akta"></div></article>
 <article class="rekord project" id="rekord" aria-labelledby="rekord-title"><div><h2 id="rekord-title">OM HÄST /</h2><p>Ett gäng som vrålar balader ihopkokade av en doom-basist, en Lars Ulrich-inspirerad trummis, en Orphei Dräng på gitarr och en sångare som lika gärna kunnat heta Kent.</p><p>Resultatet blir punk-slarvigt grunge. Typ som om Nirvana kom från Eskilstuna och hade en skiva som hette Smells like Sonic Youth.</p><p class="listen"><a href="#hemkop">Ny singel: “Akta” ↓</a></p><p class="listen"><a href="turbogalopp/">Spela vårt spel: Turbogalopp →</a></p></div></article>
-<article class="bilia project" id="bilia" aria-labelledby="bilia-title"><span class="bilia-index">04 /</span><h2 id="bilia-title">CITAT</h2><p class="bilia-note">Läs vad folk säger här nedanför.</p></article>
+<article class="bilia project" id="bilia" aria-labelledby="bilia-title"><span class="bilia-index" aria-hidden="true">04 /</span><h2 id="bilia-title">CITAT</h2><p class="bilia-note">Läs vad folk säger här nedanför.</p></article>
 </section>
 <div class="polaroids" data-slot="3" hidden style="--x:56%;--top:-22cqw"></div>
 <section class="quotes-section" id="citat" aria-labelledby="citat-title"><h2 id="citat-title">Sagt om häst</h2><div class="polaroids" data-slot="4" hidden style="--x:80%;--top:6cqw"></div>
@@ -230,8 +228,8 @@
 <section class="song-block" id="skjut-mig" aria-labelledby="skjut-title"><div class="song-card"><h2 id="skjut-title">SKJUT MIG NU</h2><div class="spotify-slot" data-track="6rJhMOM1PLizFBGZvp1qNj" data-height="152" role="region" aria-label="Spelare för Skjut mig nu"></div></div><div class="polaroids" data-slot="7" hidden style="--x:80%;--top:4cqw"></div>
 </section>
 <div class="polaroids" data-slot="8" hidden style="--x:78%;--top:-4cqw"></div>
-<footer id="contact"><h2 aria-label="Kontakt"><span aria-hidden="true">KONTAKT</span></h2><a class="email" href="mailto:bandet@haest.se">bandet@haest.se <span aria-hidden="true">↗</span></a><div class="footer-bottom"><span>HÄST</span><span>UPPSALA, SVERIGE</span><span class="credit">Designad av <a href="https://www.sainzphil.com" target="_blank" rel="noopener">Philippe Sainz</a></span><nav class="social" aria-label="Sociala medier"><a href="https://www.facebook.com/haest.se/" target="_blank" rel="noopener">Facebook</a><a href="https://www.instagram.com/haest.se/" target="_blank" rel="noopener">Instagram</a><a href="https://open.spotify.com/track/67amF2Kf06qKg0KzeZT3gw" target="_blank" rel="noopener">Spotify</a><a href="turbogalopp/">Turbogalopp</a><a href="#top">Till toppen</a></nav></div></footer>
+<footer id="contact" role="contentinfo"><h2 aria-label="Kontakt"><span aria-hidden="true">KONTAKT</span></h2><a class="email" href="mailto:bandet@haest.se">bandet@haest.se <span aria-hidden="true">↗</span></a><div class="footer-bottom"><span>HÄST</span><span>UPPSALA, SVERIGE</span><span class="credit">Designad av <a href="https://www.sainzphil.com" target="_blank" rel="noopener">Philippe Sainz<span class="sr-only"> (öppnas i ny flik)</span></a></span><nav class="social" aria-label="Sociala medier"><a href="https://www.facebook.com/haest.se/" target="_blank" rel="noopener">Facebook<span class="sr-only"> (öppnas i ny flik)</span></a><a href="https://www.instagram.com/haest.se/" target="_blank" rel="noopener">Instagram<span class="sr-only"> (öppnas i ny flik)</span></a><a href="https://open.spotify.com/artist/46Y0N0k3EoQDd82sxmXX8w" target="_blank" rel="noopener">Spotify<span class="sr-only"> (öppnas i ny flik)</span></a><a href="turbogalopp/">Turbogalopp</a><a href="#top">Till toppen</a></nav></div></footer>
 </main>
-<script src="script.js?v=40"></script>
+<script src="script.js?v=09b9e3a7"></script>
 </body>
 </html>

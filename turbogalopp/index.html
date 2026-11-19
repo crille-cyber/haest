@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ece9e6">
 <title>Turbogalopp – spela hästspelet från häst</title>
 <meta name="description" content="Turbogalopp är ett gratis webbspel från bandet häst. Galoppera genom ängen, hoppa över staket och gropar och samla morötter. Funkar på mobil och dator.">
@@ -30,26 +30,30 @@
   --marker:'Permanent Marker','Marker Felt','Chalkboard SE','Comic Sans MS',cursive;
   --hand:'Patrick Hand','Bradley Hand','Segoe Print','Comic Sans MS',cursive}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-html,body{margin:0;height:100%;background:var(--paper);overflow:hidden;overscroll-behavior:none;touch-action:none;color:var(--ink);font-family:var(--hand)}
+html,body{margin:0;height:100%;background:var(--paper);overflow:hidden;overscroll-behavior:none;touch-action:pinch-zoom;color:var(--ink);font-family:var(--hand)}
 body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5vmin;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 
 /* Spelrutan är kvadratisk */
 #stage{position:relative;flex:none;width:min(100%,calc(100vh - 46vmin));width:min(100%,calc(100dvh - 46vmin));aspect-ratio:1/1;container-type:inline-size;overflow:hidden;box-shadow:0 0 3vmin rgba(70,55,40,.2)}
 #c{display:block;width:100%;height:100%}
+#stage,#controls{touch-action:none}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-.mini{position:absolute;top:1.2cqw;width:7cqw;height:7cqw;display:flex;align-items:center;justify-content:center;font-family:var(--marker);font-size:3.4cqw;background:rgba(255,252,246,.85);border:.5cqw solid var(--ink);border-radius:48% 52% 45% 55%/55% 45% 52% 48%;color:var(--ink);z-index:5;cursor:pointer}
-#bSnd{right:1.4cqw}
-#bPause{right:9.4cqw}
+.mini{position:absolute;top:1.2cqw;width:max(7cqw,34px);height:max(7cqw,34px);padding:0;margin:0;appearance:none;-webkit-appearance:none;line-height:1;display:flex;align-items:center;justify-content:center;font-family:var(--marker);font-size:3.4cqw;background:rgba(255,252,246,.85);border:.5cqw solid var(--ink);border-radius:48% 52% 45% 55%/55% 45% 52% 48%;color:var(--ink);z-index:5;cursor:pointer}
+#bSnd{right:1cqw}
+#bPause{right:calc(1.8cqw + max(7cqw,34px))}
+.mini:focus-visible{outline:.6cqw solid var(--ink);outline-offset:.4cqw}
 #bSnd.off{opacity:.4}
 
 .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2cqw;background:rgba(250,244,236,.72);text-align:center;font-size:4cqw;line-height:1.35;padding:4cqw;z-index:4}
-.ov h1{margin:0;font-family:var(--marker);font-weight:normal;font-size:12cqw;line-height:1.05;color:var(--ink);transform:rotate(-3deg);text-shadow:.8cqw .6cqw 0 #f29bc6,-.5cqw -.4cqw 0 #8be06f}
-.ov h1.red{color:var(--ink)}
-.ov b{font-family:var(--marker);font-weight:normal;color:var(--pink)}
+.ov .ttl{margin:0;font-family:var(--marker);font-weight:normal;font-size:12cqw;line-height:1.05;color:var(--ink);transform:rotate(-3deg);text-shadow:.8cqw .6cqw 0 #f29bc6,-.5cqw -.4cqw 0 #8be06f}
+.ov .ttl.red{color:var(--ink)}
+.ov b{font-family:var(--marker);font-weight:normal;color:var(--ink);text-shadow:.35cqw .3cqw 0 var(--pink)}
 .ov .big{font-size:5cqw;font-family:var(--marker)}
 .ov .how{margin:.8cqw 0 0;font-size:4cqw;line-height:1.4;color:#4a463f}
-.gold{color:#e0a800;font-family:var(--marker)}
+.gold{color:#8a6500;font-family:var(--marker)}
 .blink{animation:bl 1.1s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
 @keyframes bl{50%{opacity:.25}}
 .hidden{display:none!important}
 
@@ -57,9 +61,11 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .ov.splash{background:none;justify-content:flex-end;gap:1.4cqw;padding-bottom:3.5cqw}
 .splash .prompt{font-family:var(--marker);font-size:5.6cqw;background:rgba(255,253,248,.9);border:.7cqw solid var(--ink);border-radius:3cqw 2.4cqw 3.2cqw 2.2cqw/2.4cqw 3.2cqw 2.2cqw 3cqw;padding:1.2cqw 4.5cqw;transform:rotate(-1.5deg);box-shadow:.7cqw .8cqw 0 rgba(28,28,28,.25)}
 .splash .rek{font-size:4.2cqw;text-shadow:0 0 1.2cqw #fff,0 0 1.2cqw #fff,0 0 1.2cqw #fff}
+.kbd{display:none}
+@media (hover:hover) and (pointer:fine){.kbd{display:inline}}
 .splash .how{margin:0;font-size:3.4cqw;line-height:1.3;color:#2e2a26;text-shadow:0 0 1.2cqw #fff,0 0 1.2cqw #fff,0 0 1.2cqw #fff}
 .splash .home{position:absolute;left:2cqw;top:1.6cqw;font-family:var(--marker);font-size:3.4cqw;color:var(--ink);text-decoration:none;background:rgba(255,252,246,.85);border:.5cqw solid var(--ink);border-radius:2cqw 1.6cqw 2.2cqw 1.4cqw;padding:.6cqw 2cqw;transform:rotate(-1.5deg)}
-.splash .home:focus-visible{outline:.6cqw solid var(--pink);outline-offset:.6cqw}
+.splash .home:focus-visible{outline:.6cqw solid var(--ink);outline-offset:.6cqw}
 .splash.launching>*{opacity:0!important;animation:none!important;transition:opacity .2s}
 
 #toast{position:absolute;left:0;right:0;top:22%;text-align:center;font-family:var(--marker);font-size:6cqw;color:var(--ink);text-shadow:.5cqw .4cqw 0 #f29bc6;opacity:0;pointer-events:none;z-index:3;transform:rotate(-2deg)}
@@ -77,7 +83,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #bJump.on{transform:translate(.5vmin,.6vmin) rotate(-.6deg)}
 
 @media (min-aspect-ratio:13/10){
-  #stage{width:min(100%,100vh);width:min(100%,100dvh)}
+  #stage{width:min(100%,100vh,calc(100vw - 2*(28vmin + 2vw + 2vmin)));width:min(100%,100dvh,calc(100vw - 2*(28vmin + 2vw + 2vmin)))}
   #controls{position:fixed;inset:0;display:block;height:auto;padding:0;pointer-events:none}
   .lane{position:absolute;left:calc(env(safe-area-inset-left) + 2vw);bottom:4vmin;width:20vmin;height:44vmin;gap:3vmin}
   #bJump{position:absolute;right:calc(env(safe-area-inset-right) + 2vw);bottom:4vmin;width:28vmin;height:28vmin;border-radius:50% 46% 52% 48%;font-size:5vmin}
@@ -87,20 +93,23 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 </head>
 <body>
 <div id="stage">
-  <canvas id="c" width="512" height="512"></canvas>
+  <h1 class="sr-only">Turbogalopp</h1>
+  <p class="sr-only">Ett gratis webbspel från grungebandet häst från Uppsala. Styr hästen mellan tre filer, hoppa över staket och gropar och samla morötter.</p>
+  <canvas id="c" width="512" height="512" role="img" aria-label="Turbogalopp, spelplan"></canvas>
+  <div id="live" class="sr-only" aria-live="polite"></div>
   <div id="toast"></div>
-  <div id="bPause" class="mini">II</div>
-  <div id="bSnd" class="mini">&#9835;</div>
+  <button type="button" id="bPause" class="mini hidden" aria-label="Pausa">II</button>
+  <button type="button" id="bSnd" class="mini" aria-label="Ljud" aria-pressed="true">&#9835;</button>
 
   <div id="menu" class="ov splash">
-    <p class="how">▲ ▼ byter fil · HOPPA hoppar<br>Hoppa över staket och gropar, spring runt murarna</p>
+    <p class="how">▲ ▼ byter fil · HOPPA hoppar<br>Hoppa över staket och gropar, spring runt murarna<span class="kbd"><br>Tangentbord: ↑ ↓ byter fil, mellanslag hoppar, P paus, M ljud</span></p>
     <div class="rek">Rekord <b id="menuBest">000000</b></div>
     <div class="prompt blink">Tryck för att starta</div>
     <a class="home" id="homeLink" href="../">← till häst</a>
   </div>
 
   <div id="over" class="ov hidden">
-    <h1 class="red">SPELET<br>SLUT</h1>
+    <div class="ttl red">SPELET<br>SLUT</div>
     <div>Poäng <b id="ovScore">000000</b></div>
     <div>Rekord <b id="ovBest">000000</b></div>
     <div id="ovNew" class="gold hidden blink">Nytt rekord!</div>
@@ -108,12 +117,12 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   </div>
 
   <div id="pauseOv" class="ov hidden">
-    <h1>PAUS</h1>
+    <div class="ttl">PAUS</div>
     <div class="blink big">Tryck för att fortsätta</div>
   </div>
 </div>
 
-<div id="controls">
+<div id="controls" aria-hidden="true">
   <div class="lane">
     <div class="btn" id="bUp"><svg viewBox="0 0 24 24"><polygon points="12,3 22,21 2,21"/></svg></div>
     <div class="btn" id="bDown"><svg viewBox="0 0 24 24"><polygon points="12,21 22,3 2,3"/></svg></div>
@@ -171,10 +180,14 @@ const horse = { lane: 1, laneF: 1, z: 0, vz: 0, onGround: true, jumpBuf: 0, inv:
 const obstacles = [], pickups = [], particles = [];
 
 try { best = parseInt(localStorage.getItem(KEY_BEST) || '0', 10) || 0; } catch (e) { best = 0; }
+const KEY_MUTE = 'turbogalopp_muted_v1';
+const reduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+let needsDraw = true;
 $('menuBest').textContent = pad6(best);
 
 /* ---------- Ljud ---------- */
 let AC = null, master = null, noiseBuf = null, muted = false;
+try { muted = localStorage.getItem(KEY_MUTE) === '1'; } catch (e) {}
 let outBus = null, fanBus = null;      // egen kanal så att fanfaren kan tystas om man hoppar över den
 function initAudio() {
   if (!AC) {
@@ -226,6 +239,7 @@ const sfx = {
 function fanfare() {
   if (!AC || muted) return;
   const t0 = AC.currentTime + .05;
+  if (fanBus) { try { fanBus.disconnect(); } catch (e) {} }
   fanBus = AC.createGain(); fanBus.gain.value = 1; fanBus.connect(master); outBus = fanBus;
   const L = [[0, 67, .1], [.12, 67, .1], [.24, 67, .1], [.36, 72, .34], [.72, 67, .1], [.84, 72, .1], [.96, 76, .1], [1.08, 79, .46], [1.58, 76, .1], [1.7, 79, .1], [1.82, 84, .85]];
   const Hm = [[.36, 64, .34], [1.08, 72, .46], [1.82, 76, .85]];
@@ -314,7 +328,7 @@ function spawn() {
   const x0 = W + 24;
   let len = choosePattern().fn(x0);
   if (horse.hearts < 3 && Math.random() < .12) { pickups.push({ type: 'heart', lane: rl(), x: x0 + len + 40, z: 0 }); len += 60; }
-  spawnGap = len + speed * (0.9 + Math.random() * 0.35) + 24;
+  spawnGap = len + speed * (Math.max(.6, .9 - Math.max(0, playTime - 55) * .004) + Math.random() * .35) + 24;
 }
 
 /* ---------- Partiklar ---------- */
@@ -353,22 +367,23 @@ function start() {
   state = 'play'; paused = false; dist = 0; runDist = 0; playTime = 0; bonus = 0; score = 0; newRec = false;
   speed = V_START; spawnGap = 170; tier = 0; annZone = 0; shake = 0; flash = 0; overShown = false;
   $('menu').classList.add('hidden'); $('over').classList.add('hidden'); $('pauseOv').classList.add('hidden');
+  $('bPause').classList.remove('hidden'); $('live').textContent = '';
   musicStart();
 }
 function beginLaunch() {
   initAudio();
   if (AC && AC.state !== 'running') { try { AC.resume().then(fanfare).catch(() => {}); } catch (e) {} } else fanfare();
-  state = 'launch'; launchT = 0; whiteFlash = .6;
+  state = 'launch'; launchT = 0; whiteFlash = reduceMotion.matches ? 0 : .6;
   $('menu').classList.add('launching');
   confetti.length = 0;
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < (reduceMotion.matches ? 0 : 90); i++) {
     const a = Math.random() * Math.PI * 2, v = 40 + Math.random() * 150;
     confetti.push({ x: 128, y: 100, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 70, rot: Math.random() * 6.28, vr: (Math.random() - .5) * 14, c: Math.floor(Math.random() * 360), life: 1.6 + Math.random() * 1.4 });
   }
 }
 function hurt(kind) {
   if (horse.inv > 0 || state !== 'play') return;
-  horse.hearts--; horse.inv = 1.6; shake = .3; flash = .35;
+  horse.hearts--; horse.inv = 1.6; shake = reduceMotion.matches ? 0 : .3; flash = reduceMotion.matches ? .15 : .35;
   speed *= .62; sfx.hit();
   sparks(HX + 20, laneFoot() - horse.z - 18, 12, ['#ee6fae', '#1c1c1c', '#f2c230']);
   if (kind === 'pit') { horse.vz = 170 * K; horse.onGround = false; }
@@ -376,6 +391,7 @@ function hurt(kind) {
 }
 function gameOver() {
   state = 'over'; overTimer = 0; overShown = false; horse.inv = 0; musicOn = false;
+  $('bPause').classList.add('hidden');
   sfx.over();
   if (score > best) { best = score; newRec = true; try { localStorage.setItem(KEY_BEST, String(best)); } catch (e) {} }
 }
@@ -385,10 +401,13 @@ function showOver() {
   $('ovNew').classList.toggle('hidden', !newRec);
   $('menuBest').textContent = pad6(best);
   $('over').classList.remove('hidden');
+  $('live').textContent = `Spelet slut. ${score} poäng.${newRec ? ' Nytt rekord!' : ''} Tryck mellanslag för att köra igen.`;
 }
 function setPaused(p) {
   if (state !== 'play') return;
-  paused = p; $('pauseOv').classList.toggle('hidden', !p);
+  paused = p; $('pauseOv').classList.toggle('hidden', !p); needsDraw = true;
+  $('bPause').setAttribute('aria-label', p ? 'Fortsätt' : 'Pausa');
+  if (AC) { try { p ? AC.suspend() : AC.resume(); } catch (e) {} }
   if (p) musicOn = false; else musicResume();
 }
 
@@ -398,12 +417,29 @@ function bindBtn(el, fn) {
 }
 bindBtn($('bUp'), () => laneMove(-1));
 bindBtn($('bDown'), () => laneMove(1));
-bindBtn($('bJump'), jumpPress);
-$('bSnd').addEventListener('pointerdown', e => {
-  e.preventDefault(); e.stopPropagation(); initAudio();
-  muted = !muted; if (master) master.gain.value = muted ? 0 : .5; $('bSnd').classList.toggle('off', muted);
+/* Samma handling för mellanslag och HOPPA: starta, fortsätt, kör igen eller hoppa. */
+function primaryAction() {
+  if (state === 'menu') beginLaunch();
+  else if (state === 'launch') start();
+  else if (state === 'over') { if (overShown && performance.now() - overAt > 400) start(); }
+  else if (paused) setPaused(false);
+  else jumpPress();
+}
+bindBtn($('bJump'), primaryAction);
+function toggleMute() {
+  initAudio();
+  muted = !muted; if (master) master.gain.value = muted ? 0 : .5;
+  $('bSnd').classList.toggle('off', muted); $('bSnd').setAttribute('aria-pressed', String(!muted));
+  try { localStorage.setItem(KEY_MUTE, muted ? '1' : '0'); } catch (e) {}
+}
+$('bSnd').classList.toggle('off', muted); $('bSnd').setAttribute('aria-pressed', String(!muted));
+/* Knapparna nås med både touch och tangentbord. pointerdown för snabb touch, click för tangentbord. */
+let miniPointer = false;
+[['bSnd', toggleMute], ['bPause', () => setPaused(!paused)]].forEach(([id, fn]) => {
+  $(id).addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); miniPointer = true; fn(); });
+  $(id).addEventListener('click', e => { e.stopPropagation(); if (miniPointer) { miniPointer = false; return; } fn(); });
+  $(id).addEventListener('keydown', e => { if (e.code === 'Space' || e.code === 'Enter') e.stopPropagation(); });
 });
-$('bPause').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); setPaused(!paused); });
 cv.addEventListener('pointerdown', e => { e.preventDefault(); initAudio(); jumpPress(); });
 /* Länken tillbaka till haest.se ska inte starta spelet */
 ['pointerdown', 'pointerup'].forEach(ev => $('homeLink').addEventListener(ev, e => e.stopPropagation()));
@@ -419,18 +455,17 @@ document.addEventListener('keydown', e => {
   else if (c === 'ArrowDown' || c === 'KeyS') { laneMove(1); e.preventDefault(); }
   else if (c === 'Space' || c === 'ArrowRight' || c === 'KeyD' || c === 'KeyZ' || c === 'KeyX') {
     e.preventDefault(); if (e.repeat) return; initAudio();
-    if (state === 'menu') beginLaunch();
-    else if (state === 'launch') start();
-    else if (state === 'over') { if (overShown && performance.now() - overAt > 400) start(); }
-    else if (paused) setPaused(false);
-    else jumpPress();
+    primaryAction();
   }
-  else if (c === 'Enter') { if (state === 'menu') beginLaunch(); else if (state === 'launch' || (state === 'over' && overShown)) start(); else if (paused) setPaused(false); }
+  else if (c === 'Enter') { if (e.repeat) return; if (state === 'menu') beginLaunch(); else if (state === 'launch' || (state === 'over' && overShown)) start(); else if (paused) setPaused(false); }
   else if (c === 'KeyP' || c === 'Escape') setPaused(!paused);
-  else if (c === 'KeyM') { initAudio(); muted = !muted; if (master) master.gain.value = muted ? 0 : .5; $('bSnd').classList.toggle('off', muted); }
+  else if (c === 'KeyM') toggleMute();
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && state === 'play' && !paused) setPaused(true); });
-window.addEventListener('blur', () => { if (state === 'play' && !paused) setPaused(true); });
+window.addEventListener('blur', () => {
+  if (state === 'launch') { start(); setPaused(true); }
+  else if (state === 'play' && !paused) setPaused(true);
+});
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -634,9 +669,11 @@ function makeGrain(pw, ph) {
 }
 function resize() {
   const r = cv.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const pw = Math.max(64, Math.min(1500, Math.round(r.width * dpr)));
-  if (cv.width !== pw || cv.height !== pw) { cv.width = pw; cv.height = pw; }
+  needsDraw = true;
+  if (cv.width === pw && cv.height === pw && grain) return;
+  cv.width = pw; cv.height = pw;
   S = pw / W;
   grain = makeGrain(Math.ceil(pw / 2.2), Math.ceil(pw / 2.2));
 }
@@ -1035,7 +1072,7 @@ function drawHUD() {
     } else ink(pts, INK, .8, 95 + i, true, .3, .28);
   }
   ctx.font = '8px ' + FONT; ctx.fillStyle = 'rgba(28,28,28,.55)';
-  ctx.fillText('REKORD ' + pad6(best), 142, 20);
+  ctx.fillText('REKORD ' + pad6(Math.max(best, score)), 142, 20);
   ctx.restore();
 }
 
@@ -1078,7 +1115,8 @@ let last = 0;
 function frame(ts) {
   const dt = Math.min(.05, Math.max(0, (ts - last) / 1000) || 0); last = ts;
   if (!paused) update(dt);
-  render();
+  // Pausad: rita bara om när något ändrats, så spelet inte drar batteri i onödan.
+  if (!paused || needsDraw) { render(); needsDraw = false; }
   requestAnimationFrame(frame);
 }
 resize();

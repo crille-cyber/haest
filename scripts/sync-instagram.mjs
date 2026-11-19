@@ -1,8 +1,11 @@
 // Hämtar bilder från Instagram (Graph API) till assets/gallery/ och uppdaterar data/gallery.json.
-// Alla nya bilder godkänns automatiskt. Ta bort en bild genom att radera dess rad i data/gallery.json och filen i assets/gallery/.
-// Kör: IG_USER_ID=... IG_TOKEN=... node scripts/sync-instagram.mjs
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+// Alla nya bilder godkänns automatiskt och sparas som 400x400 WebP (de visas i 170 px).
+// Dölj en bild: sätt "approved": false på dess rad i data/gallery.json. Radera INTE raden,
+// då hämtas bilden igen vid nästa synk. Bildfilen får du gärna ta bort.
+// Kör: IG_USER_ID=... IG_TOKEN=... node scripts/sync-instagram.mjs (kräver ImageMagick).
+import { mkdir, readFile, writeFile, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,11 +20,14 @@ const galleryPath = path.join(root, 'data/gallery.json');
 const outDir = path.join(root, 'assets/gallery');
 const current = existsSync(galleryPath) ? JSON.parse(await readFile(galleryPath, 'utf8')) : { items: [] };
 const known = new Map(current.items.map(i => [i.id, i]));
+// Sidan visar bara de senaste bilderna, så äldre inlägg än så här hämtas inte.
+const NEWEST = 24;
+const SIZE = 400;
 
 // Bilder, videor (miniatyr) och karuseller (första bilden).
 let url = `https://graph.instagram.com/v21.0/${IG_USER_ID}/media?fields=id,media_type,media_url,thumbnail_url,permalink,timestamp&limit=50&access_token=${encodeURIComponent(IG_TOKEN)}`;
 const posts = [];
-while (url && posts.length < 200) {
+while (url && posts.length < NEWEST) {
   const res = await fetch(url);
   if (!res.ok) {
     // Visa Metas felmeddelande (utan token) så vi ser varför det går fel.
@@ -50,23 +56,32 @@ async function imageUrl(post) {
 
 await mkdir(outDir, { recursive: true });
 let added = 0;
-for (const post of posts) {
+for (const [index, post] of posts.entries()) {
   if (known.has(post.id)) {
     // Fyll i medietyp för bilder som hämtades innan vi sparade den.
     const item = known.get(post.id);
     if (!item.media_type) item.media_type = post.media_type;
     continue;
   }
+  if (index >= NEWEST) continue;
   const src = await imageUrl(post);
   if (!src) continue;
   const img = await fetch(src);
   if (!img.ok) continue;
-  const ext = (img.headers.get('content-type') || '').includes('png') ? 'png' : 'jpg';
-  const file = `${post.id}.${ext}`;
-  await writeFile(path.join(outDir, file), Buffer.from(await img.arrayBuffer()));
+  const tmp = path.join(outDir, `${post.id}.download`);
+  const file = `${post.id}.webp`;
+  await writeFile(tmp, Buffer.from(await img.arrayBuffer()));
+  try {
+    // Beskär till kvadrat från mitten och krymp, samma som kortet visar.
+    execFileSync('convert', [tmp, '-auto-orient', '-resize', `${SIZE}x${SIZE}^`, '-gravity', 'center', '-extent', `${SIZE}x${SIZE}`, '-strip', '-quality', '78', path.join(outDir, file)]);
+  } finally {
+    await unlink(tmp);
+  }
   known.set(post.id, {
     id: post.id,
     src: `assets/gallery/${file}`,
+    width: SIZE,
+    height: SIZE,
     alt: '',
     permalink: post.permalink,
     timestamp: post.timestamp,
