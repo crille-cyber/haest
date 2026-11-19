@@ -1,0 +1,21 @@
+# häst
+
+> häst är ett grungeband från Uppsala, Sverige. Bandet spelar vrålande balader på svenska: punk-slarvig grunge med rötter i 90-talets alternativa rock.
+
+## Om bandet
+- Hemstad: Uppsala, Sverige
+- Genre: grunge, alternativ rock, punk
+- Språk: svenska
+- Sättning: bas, trummor, gitarr och sång
+- Senaste singel: "Akta" (Spotify: https://open.spotify.com/track/1VEEz3Ve9GJQIqUpxDwzvs)
+- Annan låt: "Skjut mig nu" (Spotify: https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj)
+- Lyssnare har jämfört bandet med Dungen, Pixies, Kent och Nirvana.
+
+## Spelningar
+Aktuella spelningar finns på https://haest.se/#work och som data i https://haest.se/data/gigs.json
+
+## Kontakt och bokning
+- E-post: bandet@haest.se
+- Instagram: https://www.instagram.com/haest.se/
+- Facebook: https://www.facebook.com/haest.se/
+- Webbplats: https://haest.se/

@@ -1,0 +1,49 @@
+name: Bygg spelningar och SEO-data
+
+# Skriver in spelningarna från data/gigs.json direkt i index.html (lista + JSON-LD)
+# och uppdaterar sitemap.xml. Körs när spelningarna ändras och en gång per dygn,
+# så att passerade spelningar flyttas till "spelade".
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/gigs.json'
+      - 'scripts/build-seo.mjs'
+      - 'index.html'
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-seo
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Bygg
+        run: node scripts/build-seo.mjs
+
+      - name: Spara ändringar
+        run: |
+          # Bara datumet i sitemap ändrat? Då behövs ingen commit.
+          if git diff --quiet -- index.html; then
+            echo "Inga ändringar i index.html."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add index.html sitemap.xml
+          git commit -m "Uppdatera spelningar och SEO-data"
+          git pull --rebase origin main
+          git push
