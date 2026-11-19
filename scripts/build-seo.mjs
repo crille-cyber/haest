@@ -41,7 +41,8 @@ const band = {
   track: [
     { '@type': 'MusicRecording', name: 'Akta', url: 'https://open.spotify.com/track/1VEEz3Ve9GJQIqUpxDwzvs' },
     { '@type': 'MusicRecording', name: 'Skjut mig nu', url: 'https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj' }
-  ]
+  ],
+  subjectOf: { '@type': 'VideoGame', name: 'Turbogalopp', url: `${SITE}turbogalopp/` }
 };
 
 const events = gigs.filter(g => g.date).map(g => ({
@@ -74,6 +75,7 @@ writeFileSync('index.html', html);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${SITE}</loc><lastmod>${today}</lastmod></url>
+  <url><loc>${SITE}turbogalopp/</loc></url>
 </urlset>
 `;
 writeFileSync('sitemap.xml', sitemap);

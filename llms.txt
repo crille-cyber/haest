@@ -11,6 +11,9 @@
 - Annan låt: "Skjut mig nu" (Spotify: https://open.spotify.com/track/6rJhMOM1PLizFBGZvp1qNj)
 - Lyssnare har jämfört bandet med Dungen, Pixies, Kent och Nirvana.
 
+## Spel
+Bandet har gjort webbspelet Turbogalopp, gratis att spela i webbläsaren på mobil och dator: https://haest.se/turbogalopp/
+
 ## Spelningar
 Aktuella spelningar finns på https://haest.se/#work och som data i https://haest.se/data/gigs.json
 
