@@ -7,8 +7,7 @@ import { createHash } from 'node:crypto';
 
 const SITE = 'https://haest.se/';
 const SPOTIFY_ARTIST = 'https://open.spotify.com/artist/46Y0N0k3EoQDd82sxmXX8w';
-// Fyll i när länken finns, så hamnar den i den strukturerade datan och llms.txt.
-const APPLE_MUSIC_ARTIST = '';
+const APPLE_MUSIC_ARTIST = 'https://music.apple.com/se/artist/h%C3%A4st/1886427358';
 const MONTHS_SV = ['jan', 'feb', 'mars', 'apr', 'maj', 'juni', 'juli', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
 const { gigs } = JSON.parse(readFileSync('data/gigs.json', 'utf8'));
