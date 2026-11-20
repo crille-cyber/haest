@@ -298,6 +298,10 @@ const CHORD_TONES = { 'F#': [42, 61, 66, 70], 'B': [35, 63, 66, 71], 'E': [40, 6
 const LEAD_AT = new Map();
 for (let i = 0; i < SONG_LEAD.length; i += 3) LEAD_AT.set(SONG_LEAD[i], [SONG_LEAD[i + 1], SONG_LEAD[i + 2]]);
 const ARP = [1, 2, 3, 2];
+/* Introt spelas bara första gången. Sedan loopar vers + refräng utan skarv:
+   refrängen slutar på E och versen börjar på F#, samma övergång som i låten. */
+const LOOP_START = 32, LOOP_LEN = SONG_STEPS - LOOP_START;
+const songPos = n => (n < SONG_STEPS ? n : LOOP_START + (n - SONG_STEPS) % LOOP_LEN);
 const pulseCache = {};
 function pulseWave(duty) {
   if (!pulseCache[duty]) {
@@ -334,7 +338,7 @@ function musicTick() {
 }
 function playStep(n, t) {
   if (muted) return;
-  const s = n % SONG_STEPS, bar = s >> 4, st = s & 15, sec = +SONG_SECT[bar];
+  const s = songPos(n), bar = s >> 4, st = s & 15, sec = +SONG_SECT[bar];
   const ch = CHORD_TONES[SONG_CHORDS[s >> 3]];
   const lead = LEAD_AT.get(s);
   if (lead) {
@@ -356,6 +360,7 @@ function playStep(n, t) {
   else if (st === 4 || st === 12) noise(.12, .14, 'bandpass', 1800, t);
   if (!(st & 1)) noise(sec === 2 && (st & 3) === 2 ? .1 : .03, .045, 'highpass', 7000, t);
   if (sec === 2 && st === 0 && SONG_SECT[bar - 1] !== '2') noise(.5, .08, 'highpass', 6000, t);
+  if (n >= SONG_STEPS && s === LOOP_START) noise(.5, .08, 'highpass', 6000, t);  // cymbal när versen kommer tillbaka
 }
 
 /* ---------- Mönster för hinder ---------- */
