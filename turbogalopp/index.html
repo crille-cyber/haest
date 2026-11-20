@@ -562,17 +562,26 @@ function lbShowForm() {
   $('lbSend').disabled = false;
   if (can) { let n = ''; try { n = localStorage.getItem(KEY_NAME) || ''; } catch (e) {} $('lbName').value = n; }
 }
-function lbRender(list, top, me) {
+/* myId markerar just den inskickade rundan. Utan id (äldre Worker) markeras alla rader med spelarens namn. */
+function lbRender(list, top, me, myId, extra) {
   list.replaceChildren();
   if (!top || !top.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Inga resultat än. Bli först!'; list.append(li); return; }
   top.forEach((row, i) => {
     const li = document.createElement('li');
-    if (me && row.name.toLowerCase() === me.toLowerCase()) li.className = 'me';
+    const mine = myId != null && row.id != null ? row.id === myId : (me && row.name.toLowerCase() === me.toLowerCase());
+    if (mine) li.className = 'me';
     const r = document.createElement('span'); r.textContent = (i + 1) + '.';
     const n = document.createElement('span'); n.className = 'n'; n.textContent = row.name;
     const s = document.createElement('span'); s.className = 's'; s.textContent = pad6(row.score);
     li.append(r, n, s); list.append(li);
   });
+  if (extra) {  // egen placering under listan när den inte syns i den
+    const li = document.createElement('li'); li.className = 'me';
+    const r = document.createElement('span'); r.textContent = extra.rank + '.';
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = extra.name;
+    const s = document.createElement('span'); s.className = 's'; s.textContent = pad6(extra.score);
+    li.append(r, n, s); list.append(li);
+  }
 }
 function lbMsg(text, err) { const m = $('lbMsg'); m.textContent = text; m.classList.toggle('err', Boolean(err)); m.classList.remove('hidden'); }
 $('lbForm').addEventListener('submit', e => {
@@ -588,7 +597,10 @@ $('lbForm').addEventListener('submit', e => {
       $('lbForm').classList.add('hidden'); $('lbName').blur();
       $('over').classList.add('lbmode');
       lbMsg(d.rank <= 10 ? `Plats ${d.rank} på topplistan!` : `Plats ${d.rank}. Kör igen och klättra!`);
-      lbRender($('lbTop'), (d.top || []).slice(0, 5), name); $('lbTop').classList.remove('hidden');
+      const top5 = (d.top || []).slice(0, 5);
+      const shown = d.id != null ? top5.some(r => r.id === d.id) : d.rank <= 5;
+      lbRender($('lbTop'), top5, name, d.id, shown ? null : { rank: d.rank, name, score });
+      $('lbTop').classList.remove('hidden');
       $('live').textContent = `Skickat. Du kom på plats ${d.rank}.`;
       overAt = performance.now();
       gc('spel/topplista', 'Turbogalopp: skickat till topplistan');

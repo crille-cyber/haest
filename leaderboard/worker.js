@@ -100,22 +100,19 @@ async function submit(request, env, json) {
   ).bind(run.id, name.value, name.key, score, Math.round(playTime * 10) / 10, Date.now(), ipHash.slice(0, 32)).run();
   if (!res.meta || res.meta.changes !== 1) return json({ error: 'Den här omgången är redan inskickad.' }, 409);
 
-  // Placering: antal namn vars bästa resultat är högre, plus ett.
-  const better = await env.DB.prepare(
-    'SELECT COUNT(*) AS n FROM (SELECT name_key, MAX(score) AS best FROM scores GROUP BY name_key) WHERE best > ?'
-  ).bind(score).first();
-  return json({ ok: true, rank: (better ? better.n : 0) + 1, top: await topList(env.DB) });
+  // Varje runda är en egen rad på listan, så samma namn kan ha flera placeringar.
+  // Placering: antal resultat som är högre, eller lika höga men inskickade tidigare, plus ett.
+  const id = res.meta.last_row_id;
+  const better = await env.DB.prepare('SELECT COUNT(*) AS n FROM scores WHERE score > ? OR (score = ? AND id < ?)')
+    .bind(score, score, id).first();
+  return json({ ok: true, id, rank: (better ? better.n : 0) + 1, top: await topList(env.DB) });
 }
 
 async function topList(db) {
   const { results } = await db.prepare(
-    `SELECT name, score, created_at FROM (
-       SELECT name, score, created_at,
-              ROW_NUMBER() OVER (PARTITION BY name_key ORDER BY score DESC, created_at ASC) AS rn
-       FROM scores)
-     WHERE rn = 1 ORDER BY score DESC, created_at ASC LIMIT ?`
+    'SELECT id, name, score, created_at FROM scores ORDER BY score DESC, id ASC LIMIT ?'
   ).bind(TOP_N).all();
-  return (results || []).map(r => ({ name: r.name, score: r.score, date: new Date(r.created_at).toISOString().slice(0, 10) }));
+  return (results || []).map(r => ({ id: r.id, name: r.name, score: r.score, date: new Date(r.created_at).toISOString().slice(0, 10) }));
 }
 
 // ---- Namn ----

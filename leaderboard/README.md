@@ -53,6 +53,7 @@ DELETE FROM scores;
 
 Spelet körs i webbläsaren, så ingen topplista kan göras helt fuskfri. Den här gör det svårt:
 
+- Varje runda blir en egen rad, så samma namn kan ligga på flera platser i listan.
 - Varje inskickning kräver en signerad biljett som spelet får när en omgång börjar, och biljetten kan bara användas en gång.
 - Poängen måste gå ihop med spelets egen formel och vara möjlig på den tid som faktiskt gått.
 - Samma IP kan skicka högst 10 resultat per 10 minuter.
