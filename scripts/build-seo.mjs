@@ -25,7 +25,7 @@ const played = gigs.filter(g => g.date && g.date < today).sort((a, b) => b.date.
 const row = g => {
   const past = Boolean(g.date) && g.date < today;
   const date = g.date ? `<time class="gig-date" datetime="${g.date}">${fmt(g.date)}</time>` : '<span class="gig-date">Datum TBA</span>';
-  const link = safeLink(g.link) && !past ? `<a href="${esc(g.link)}" target="_blank" rel="noopener"> biljetter →<span class="sr-only"> (öppnas i ny flik)</span></a>` : '';
+  const link = safeLink(g.link) && !past ? `<a href="${esc(g.link)}" target="_blank" rel="noopener" data-gc="klick/biljetter" data-gc-title="Biljetter: ${esc(g.venue)}"> biljetter →<span class="sr-only"> (öppnas i ny flik)</span></a>` : '';
   return `<li${past ? ' class="gig-past"' : ''}>${date}<span><span class="gig-venue">${esc(g.venue)}</span><span class="gig-city">, ${esc(g.city)}</span>${link}</span></li>`;
 };
 const listHtml = [...upcoming, ...tba, ...played].map(row).join('') || '<li class="gig-empty">Inga spelningar inbokade just nu.</li>';

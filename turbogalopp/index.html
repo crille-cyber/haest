@@ -66,6 +66,23 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .splash .how{margin:0;font-size:3.4cqw;line-height:1.3;color:#2e2a26;text-shadow:0 0 1.2cqw #fff,0 0 1.2cqw #fff,0 0 1.2cqw #fff}
 .splash .home{position:absolute;left:2cqw;top:1.6cqw;font-family:var(--marker);font-size:3.4cqw;color:var(--ink);text-decoration:none;background:rgba(255,252,246,.85);border:.5cqw solid var(--ink);border-radius:2cqw 1.6cqw 2.2cqw 1.4cqw;padding:.6cqw 2cqw;transform:rotate(-1.5deg)}
 .splash .home:focus-visible{outline:.6cqw solid var(--ink);outline-offset:.6cqw}
+.lbbtn{font-family:var(--marker);font-size:3.4cqw;color:var(--ink);background:#f2c230;border:.5cqw solid var(--ink);border-radius:1.6cqw 2.2cqw 1.4cqw 2cqw;padding:.3cqw 1.8cqw;transform:rotate(-2deg);cursor:pointer;line-height:1.3;margin:0 0 0 2cqw;vertical-align:middle}
+#lbOv{background:rgba(250,244,236,.96)}
+.lbbtn:focus-visible,.lbclose:focus-visible,.lbform button:focus-visible,.lbform input:focus-visible{outline:.6cqw solid var(--ink);outline-offset:.5cqw}
+.lbform{display:flex;gap:1.4cqw;justify-content:center;width:100%;max-width:72cqw;margin:0}
+.lbform input{flex:1;min-width:0;font:inherit;font-size:max(3.6cqw,16px);padding:1cqw 1.8cqw;border:.5cqw solid var(--ink);border-radius:1.4cqw;background:#fffdf8;color:var(--ink)}
+.lbform button,.lbclose{font-family:var(--marker);font-size:3.8cqw;padding:.8cqw 2.6cqw;border:.5cqw solid var(--ink);border-radius:1.6cqw 1.2cqw 1.8cqw 1.4cqw;background:var(--pink);color:var(--ink);cursor:pointer;line-height:1.2}
+.lbform button:disabled{opacity:.6;cursor:wait}
+.lbmsg{margin:0;font-size:3.6cqw;font-family:var(--marker)}
+.lbmsg.err{color:#a3133d}
+.lblist{list-style:none;margin:0;padding:0;width:100%;max-width:62cqw;font-size:3.3cqw;line-height:1.3;text-align:left}
+.lblist li{display:grid;grid-template-columns:5cqw 1fr auto;gap:1.6cqw;padding:.2cqw 1cqw;border-radius:1cqw}
+.lblist li.me{background:rgba(242,194,48,.55)}
+.lblist .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lblist .s{font-variant-numeric:tabular-nums}
+.lblist .empty{display:block;text-align:center}
+.ov.lbmode .ttl{font-size:8cqw}
+.ov.lbmode{gap:1.6cqw}
 .splash.launching>*{opacity:0!important;animation:none!important;transition:opacity .2s}
 
 #toast{position:absolute;left:0;right:0;top:22%;text-align:center;font-family:var(--marker);font-size:6cqw;color:var(--ink);text-shadow:.5cqw .4cqw 0 #f29bc6;opacity:0;pointer-events:none;z-index:3;transform:rotate(-2deg)}
@@ -103,7 +120,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
   <div id="menu" class="ov splash">
     <p class="how">▲ ▼ byter fil · HOPPA hoppar<br>Hoppa över staket och gropar, spring runt murarna<span class="kbd"><br>Tangentbord: ↑ ↓ byter fil, mellanslag hoppar, P paus, M ljud</span></p>
-    <div class="rek">Rekord <b id="menuBest">000000</b></div>
+    <div class="rek">Rekord <b id="menuBest">000000</b><button type="button" class="lbbtn hidden" id="lbOpen">Topplista</button></div>
     <div class="prompt blink">Tryck för att starta</div>
     <a class="home" id="homeLink" href="../">← till häst</a>
   </div>
@@ -113,7 +130,20 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
     <div>Poäng <b id="ovScore">000000</b></div>
     <div>Rekord <b id="ovBest">000000</b></div>
     <div id="ovNew" class="gold hidden blink">Nytt rekord!</div>
+    <form id="lbForm" class="lbform hidden" autocomplete="off" novalidate>
+      <label for="lbName" class="sr-only">Ditt namn till topplistan</label>
+      <input id="lbName" name="name" maxlength="16" placeholder="Ditt namn" enterkeyhint="send" autocapitalize="words" spellcheck="false">
+      <button type="submit" id="lbSend">Till topplistan</button>
+    </form>
+    <p id="lbMsg" class="lbmsg hidden" role="status"></p>
+    <ol id="lbTop" class="lblist hidden" aria-label="Topplista"></ol>
     <div class="blink big">Tryck för att köra igen</div>
+  </div>
+
+  <div id="lbOv" class="ov hidden" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <div class="ttl" id="lbTitle">TOPPLISTA</div>
+    <ol id="lbAll" class="lblist"></ol>
+    <button type="button" class="lbclose" id="lbClose">Stäng</button>
   </div>
 
   <div id="pauseOv" class="ov hidden">
@@ -368,6 +398,8 @@ function start() {
   speed = V_START; spawnGap = 170; tier = 0; annZone = 0; shake = 0; flash = 0; overShown = false;
   $('menu').classList.add('hidden'); $('over').classList.add('hidden'); $('pauseOv').classList.add('hidden');
   $('bPause').classList.remove('hidden'); $('live').textContent = '';
+  lbNewRun();
+  gc('spel/start', 'Turbogalopp: start');
   musicStart();
 }
 function beginLaunch() {
@@ -390,7 +422,10 @@ function hurt(kind) {
   if (horse.hearts <= 0) gameOver();
 }
 function gameOver() {
+  // Morötter som plockas i samma bildruta räknas in, så poängen alltid följer formeln.
+  score = Math.floor(runDist * .5) + bonus;
   state = 'over'; overTimer = 0; overShown = false; horse.inv = 0; musicOn = false;
+  gc('spel/slut/' + scoreBucket(score), 'Turbogalopp: spelet slut, ' + scoreBucket(score) + ' poäng');
   $('bPause').classList.add('hidden');
   sfx.over();
   if (score > best) { best = score; newRec = true; try { localStorage.setItem(KEY_BEST, String(best)); } catch (e) {} }
@@ -400,6 +435,7 @@ function showOver() {
   $('ovScore').textContent = pad6(score); $('ovBest').textContent = pad6(best);
   $('ovNew').classList.toggle('hidden', !newRec);
   $('menuBest').textContent = pad6(best);
+  lbShowForm();
   $('over').classList.remove('hidden');
   $('live').textContent = `Spelet slut. ${score} poäng.${newRec ? ' Nytt rekord!' : ''} Tryck mellanslag för att köra igen.`;
 }
@@ -441,6 +477,98 @@ let miniPointer = false;
   $(id).addEventListener('keydown', e => { if (e.code === 'Space' || e.code === 'Enter') e.stopPropagation(); });
 });
 cv.addEventListener('pointerdown', e => { e.preventDefault(); initAudio(); jumpPress(); });
+/* ---------- Statistik (GoatCounter) ---------- */
+function gc(path, title) {
+  try { if (window.goatcounter && typeof window.goatcounter.count === 'function') window.goatcounter.count({ path, title, event: true }); } catch (e) {}
+}
+function scoreBucket(n) {
+  const steps = [0, 1000, 5000, 10000, 25000, 50000, 100000];
+  let i = steps.length - 1; while (i > 0 && n < steps[i]) i--;
+  return i === steps.length - 1 ? steps[i] + '+' : steps[i] + '-' + (steps[i + 1] - 1);
+}
+
+/* ---------- Topplista ----------
+   Fyll i adressen till Cloudflare-Workern (leaderboard/README.md). Tom = topplistan är avstängd. */
+const LB_URL = '';
+const KEY_NAME = 'turbogalopp_name_v1';
+let lbToken = null, lbSent = false;
+function lbFetch(path, opts = {}) {
+  const ctl = 'AbortController' in window ? new AbortController() : null;
+  const t = ctl ? setTimeout(() => ctl.abort(), 8000) : 0;
+  return fetch(LB_URL.replace(/\/$/, '') + path, { ...opts, signal: ctl ? ctl.signal : undefined, headers: { 'Content-Type': 'application/json' } })
+    .then(async r => { clearTimeout(t); const body = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(body.error || 'Fel'), { status: r.status }); return body; });
+}
+function lbNewRun() {
+  lbToken = null; lbSent = false;
+  ['lbForm', 'lbMsg', 'lbTop'].forEach(id => $(id).classList.add('hidden'));
+  $('over').classList.remove('lbmode');
+  if (!LB_URL) return;
+  lbFetch('/start', { method: 'POST' }).then(d => { lbToken = d.token; }).catch(() => {});
+}
+function lbShowForm() {
+  const can = Boolean(LB_URL && lbToken && !lbSent && score > 0);
+  $('lbForm').classList.toggle('hidden', !can);
+  $('lbSend').disabled = false;
+  if (can) { let n = ''; try { n = localStorage.getItem(KEY_NAME) || ''; } catch (e) {} $('lbName').value = n; }
+}
+function lbRender(list, top, me) {
+  list.replaceChildren();
+  if (!top || !top.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Inga resultat än. Bli först!'; list.append(li); return; }
+  top.forEach((row, i) => {
+    const li = document.createElement('li');
+    if (me && row.name.toLowerCase() === me.toLowerCase()) li.className = 'me';
+    const r = document.createElement('span'); r.textContent = (i + 1) + '.';
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = row.name;
+    const s = document.createElement('span'); s.className = 's'; s.textContent = pad6(row.score);
+    li.append(r, n, s); list.append(li);
+  });
+}
+function lbMsg(text, err) { const m = $('lbMsg'); m.textContent = text; m.classList.toggle('err', Boolean(err)); m.classList.remove('hidden'); }
+$('lbForm').addEventListener('submit', e => {
+  e.preventDefault(); e.stopPropagation();
+  if (!lbToken || lbSent) return;
+  const name = $('lbName').value.replace(/\s+/g, ' ').trim();
+  if (name.length < 2) { lbMsg('Skriv ett namn med minst 2 tecken.', true); $('lbName').focus(); return; }
+  $('lbSend').disabled = true; lbMsg('Skickar…');
+  lbFetch('/submit', { method: 'POST', body: JSON.stringify({ token: lbToken, name, score, playTime: Math.round(playTime * 100) / 100, dist: Math.round(runDist * 1000) / 1000, bonus }) })
+    .then(d => {
+      lbSent = true;
+      try { localStorage.setItem(KEY_NAME, name); } catch (err) {}
+      $('lbForm').classList.add('hidden'); $('lbName').blur();
+      $('over').classList.add('lbmode');
+      lbMsg(d.rank <= 10 ? `Plats ${d.rank} på topplistan!` : `Plats ${d.rank}. Kör igen och klättra!`);
+      lbRender($('lbTop'), (d.top || []).slice(0, 5), name); $('lbTop').classList.remove('hidden');
+      $('live').textContent = `Skickat. Du kom på plats ${d.rank}.`;
+      overAt = performance.now();
+      gc('spel/topplista', 'Turbogalopp: skickat till topplistan');
+    })
+    .catch(err => {
+      $('lbSend').disabled = false;
+      if (err.status === 409 || (err.status === 400 && /omgång|ihop/.test(err.message))) { lbSent = true; $('lbForm').classList.add('hidden'); }
+      lbMsg(err.name === 'AbortError' ? 'Topplistan svarar inte just nu.' : (err.message || 'Kunde inte skicka.'), true);
+    });
+});
+/* Formuläret ska inte starta om spelet eller trigga spelets tangenter */
+['pointerdown', 'pointerup', 'click', 'keydown'].forEach(ev => $('lbForm').addEventListener(ev, e => e.stopPropagation()));
+
+let lbByKey = false;
+function lbOpen(byKey) {
+  lbByKey = byKey;
+  $('lbOv').classList.remove('hidden');
+  lbRender($('lbAll'), [], null); $('lbAll').firstChild.textContent = 'Laddar…';
+  let me = ''; try { me = localStorage.getItem(KEY_NAME) || ''; } catch (e) {}
+  lbFetch('/top').then(d => lbRender($('lbAll'), d.top, me)).catch(() => { $('lbAll').firstChild.textContent = 'Topplistan svarar inte just nu.'; });
+  $('lbClose').focus();
+  gc('spel/visa-topplista', 'Turbogalopp: visade topplistan');
+}
+/* Fokus tillbaka till knappen bara för tangentbordsanvändare, annars startar mellanslag inte spelet. */
+function lbClose() { $('lbOv').classList.add('hidden'); if (lbByKey) $('lbOpen').focus(); else document.activeElement && document.activeElement.blur(); }
+if (LB_URL) $('lbOpen').classList.remove('hidden');
+$('lbOpen').addEventListener('click', e => { e.stopPropagation(); lbOpen(e.detail === 0); });
+$('lbClose').addEventListener('click', e => { e.stopPropagation(); lbClose(); });
+['pointerdown', 'pointerup'].forEach(ev => { $('lbOpen').addEventListener(ev, e => e.stopPropagation()); $('lbOv').addEventListener(ev, e => e.stopPropagation()); });
+$('lbOpen').addEventListener('keydown', e => e.stopPropagation());
+
 /* Länken tillbaka till haest.se ska inte starta spelet */
 ['pointerdown', 'pointerup'].forEach(ev => $('homeLink').addEventListener(ev, e => e.stopPropagation()));
 $('homeLink').addEventListener('keydown', e => e.stopPropagation());
@@ -451,6 +579,7 @@ $('pauseOv').addEventListener('pointerdown', e => { e.preventDefault(); setPause
 
 document.addEventListener('keydown', e => {
   const c = e.code;
+  if (!$('lbOv').classList.contains('hidden')) { if (c === 'Escape') { e.preventDefault(); lbClose(); } return; }
   if (c === 'ArrowUp' || c === 'KeyW') { laneMove(-1); e.preventDefault(); }
   else if (c === 'ArrowDown' || c === 'KeyS') { laneMove(1); e.preventDefault(); }
   else if (c === 'Space' || c === 'ArrowRight' || c === 'KeyD' || c === 'KeyZ' || c === 'KeyX') {
@@ -1125,5 +1254,6 @@ window.addEventListener('resize', resize);
 requestAnimationFrame(frame);
 })();
 </script>
+<script data-goatcounter="https://haest.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

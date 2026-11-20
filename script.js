@@ -183,6 +183,7 @@
     if (gig.link && /^https:\/\//.test(gig.link) && !past) {
       const a = document.createElement('a');
       a.href = gig.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = ' biljetter →';
+      a.dataset.gc = 'klick/biljetter'; a.dataset.gcTitle = `Biljetter: ${gig.venue}`;
       const hint = document.createElement('span');
       hint.className = 'sr-only';
       hint.textContent = ' (öppnas i ny flik)';
@@ -292,3 +293,13 @@
   if (song && slot(5)) song.before(slot(5));
   if (footer && slot(7)) footer.before(slot(7));
 })();
+
+// häst: räkna klick på utgående länkar i GoatCounter (data-gc="klick/namn").
+// Delegerat, så att länkar som skapas av JavaScript också räknas.
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('[data-gc]');
+  if (!a || !window.goatcounter || typeof window.goatcounter.count !== 'function') return;
+  try {
+    window.goatcounter.count({ path: a.dataset.gc, title: a.dataset.gcTitle || a.textContent.trim(), event: true });
+  } catch (err) {}
+});
