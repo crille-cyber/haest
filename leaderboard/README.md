@@ -26,6 +26,8 @@ Filer här:
 8. **Koppla spelet.** Skriv in adressen (utan `/top`) i `turbogalopp/index.html`:
    `const LB_URL = 'https://haest-topplista.DITTNAMN.workers.dev';`
 
+Igång sedan 20 november 2026 på `https://shiny-brook-ae3a.crillelampa.workers.dev`.
+
 Menyernas namn i Cloudflare kan skilja sig lite, men stegen är desamma.
 
 ## Ta bort fusk eller olämpliga namn
