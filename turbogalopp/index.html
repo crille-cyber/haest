@@ -265,34 +265,64 @@ const sfx = {
   zone() { [392, 523, 659].forEach((f, i) => tone(f, .12, 'triangle', .14, null, AC ? AC.currentTime + i * .09 : 0)); }
 };
 
-/* 8-bitsfanfar till startskärmen (ca 2,7 s): C-dur, trumpetlik lead, bas, kick och snare */
+/* 8-bitsfanfar till startskärmen (ca 2,7 s): B-dur som låten, trumpetlik lead, bas, kick och snare */
 function fanfare() {
   if (!AC || muted) return;
   const t0 = AC.currentTime + .05;
   if (fanBus) { try { fanBus.disconnect(); } catch (e) {} }
   fanBus = AC.createGain(); fanBus.gain.value = 1; fanBus.connect(master); outBus = fanBus;
-  const L = [[0, 67, .1], [.12, 67, .1], [.24, 67, .1], [.36, 72, .34], [.72, 67, .1], [.84, 72, .1], [.96, 76, .1], [1.08, 79, .46], [1.58, 76, .1], [1.7, 79, .1], [1.82, 84, .85]];
-  const Hm = [[.36, 64, .34], [1.08, 72, .46], [1.82, 76, .85]];
-  const B = [[0, 36, .34], [.36, 36, .34], [.72, 41, .3], [1.08, 43, .46], [1.58, 43, .2], [1.82, 36, .9]];
+  const L = [[0, 66, .1], [.12, 66, .1], [.24, 66, .1], [.36, 71, .34], [.72, 66, .1], [.84, 71, .1], [.96, 75, .1], [1.08, 78, .46], [1.58, 75, .1], [1.7, 78, .1], [1.82, 83, .85]];
+  const Hm = [[.36, 63, .34], [1.08, 71, .46], [1.82, 75, .85]];
+  const B = [[0, 35, .34], [.36, 35, .34], [.72, 40, .3], [1.08, 42, .46], [1.58, 42, .2], [1.82, 35, .9]];
   L.forEach(n => tone(mtof(n[1]), n[2], 'square', .12, null, t0 + n[0]));
   Hm.forEach(n => tone(mtof(n[1]), n[2], 'square', .06, null, t0 + n[0]));
   B.forEach(n => tone(mtof(n[1]), n[2], 'triangle', .26, null, t0 + n[0]));
   [0, .36, .72, 1.08, 1.82].forEach(d => tone(150, .14, 'sine', .35, 40, t0 + d));
   [.36, 1.08, 1.82].forEach(d => noise(.18, .14, 'bandpass', 1800, t0 + d));
   noise(.9, .1, 'highpass', 6000, t0 + 1.82);
-  [84, 88, 91, 96].forEach((m, i) => tone(mtof(m), .1, 'square', .06, null, t0 + 2.0 + i * .08));
+  [83, 87, 90, 95].forEach((m, i) => tone(mtof(m), .1, 'square', .06, null, t0 + 2.0 + i * .08));
   outBus = null;
 }
 function skipFanfare() {
   if (AC && fanBus) { try { fanBus.gain.setTargetAtTime(0, AC.currentTime, .03); } catch (e) {} }
 }
 
-/* Liten chiptune-loop: Am - F - C - G */
-const BPM = 140, STEP_T = 60 / BPM / 4;
-const ROOT = [45, 41, 48, 43];
-const CHORD = [[69, 72, 76], [65, 69, 72], [72, 76, 79], [67, 71, 74]];
-const ARP = [0, 1, 2, 1, 0, 1, 2, 1];
-const BASS_STEPS = [0, 3, 6, 8, 11, 14];
+/* Musik: "Ta mig till havet" av häst som 8-bitars arrangemang (B-dur).
+   Melodi på pulsvåg med vibrato (ljusare och med eko i refrängen), arpeggio på 12,5 % puls,
+   triangelbas i åttondelar och brustrummor. En takt = 16 sextondelar. */
+const BPM = 92, STEP_T = 60 / BPM / 4, SONG_STEPS = 352;
+const SONG_LEAD = [0,78,2,3,73,1,5,70,1,7,73,1,8,78,2,11,73,1,13,70,1,14,73,1,16,78,4,24,76,2,26,75,2,28,73,2,30,70,2,32,58,4,41,61,1,43,61,1,55,66,1,57,64,1,58,64,1,60,64,1,61,64,1,64,66,4,79,63,1,80,63,1,81,64,2,83,66,3,86,61,2,88,59,3,91,61,1,92,59,1,93,56,1,94,54,2,96,54,3,111,63,1,112,64,3,115,66,2,119,61,1,120,59,3,124,61,1,126,61,1,127,59,1,128,59,1,129,57,1,131,54,4,141,54,1,145,59,1,147,59,1,149,61,5,161,59,1,165,61,7,173,61,1,174,62,1,175,61,1,183,56,1,185,59,3,188,61,1,189,58,3,196,64,1,197,64,2,201,64,1,202,64,2,207,68,1,208,68,6,214,66,4,220,66,1,221,66,1,222,66,1,223,66,1,224,66,12,240,71,1,242,75,1,244,78,1,246,75,1,248,71,1,250,66,1,252,68,2,254,70,2,262,64,1,263,64,1,264,64,1,266,64,1,267,64,1,270,68,1,271,68,1,272,68,7,280,66,1,281,66,1,284,66,1,285,64,1,286,66,2,288,66,12,304,71,1,306,75,1,308,78,1,310,80,2,312,78,2,314,75,2,316,73,2,318,75,2,324,64,1,325,64,1,326,66,1,328,66,1,329,66,1,330,67,1,331,67,1,332,66,1,334,67,1,335,67,1,336,69,1,337,68,9,346,69,1,347,68,1,348,66,4];          // [steg, midi, längd i sextondelar, ...]
+const SONG_SECT = '0011111111112222222222';  // per takt: 0 intro, 1 vers, 2 refräng
+const SONG_CHORDS = 'F# F# F# F# F# F# F# B F# B B B F# F# B B D D D D B B B B E E B B B B B B E E B B B B B B D D E E'.split(' ');  // per halvtakt
+const CHORD_TONES = { 'F#': [42, 61, 66, 70], 'B': [35, 63, 66, 71], 'E': [40, 64, 68, 71], 'D': [38, 62, 66, 69] };  // [bas, arpeggio...]
+const LEAD_AT = new Map();
+for (let i = 0; i < SONG_LEAD.length; i += 3) LEAD_AT.set(SONG_LEAD[i], [SONG_LEAD[i + 1], SONG_LEAD[i + 2]]);
+const ARP = [1, 2, 3, 2];
+const pulseCache = {};
+function pulseWave(duty) {
+  if (!pulseCache[duty]) {
+    const n = 48, re = new Float32Array(n), im = new Float32Array(n);
+    for (let k = 1; k < n; k++) re[k] = 2 / (k * Math.PI) * Math.sin(k * Math.PI * duty);
+    pulseCache[duty] = AC.createPeriodicWave(re, im);
+  }
+  return pulseCache[duty];
+}
+function pulseNote(m, dur, duty, vol, t, vib) {
+  if (!AC || muted) return;
+  const f = mtof(m), o = AC.createOscillator(), g = AC.createGain();
+  o.setPeriodicWave(pulseWave(duty)); o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .004);
+  g.gain.linearRampToValueAtTime(vol * .72, t + .09); g.gain.setValueAtTime(vol * .72, t + Math.max(.09, dur));
+  g.gain.linearRampToValueAtTime(0, t + Math.max(.09, dur) + .03);
+  let lfo = null;
+  if (vib && dur > .3) {
+    lfo = AC.createOscillator(); const d = AC.createGain();
+    lfo.frequency.value = 5.5; d.gain.setValueAtTime(0, t); d.gain.setValueAtTime(0, t + .18);
+    d.gain.linearRampToValueAtTime(f * (Math.pow(2, .22 / 12) - 1), t + .33);
+    lfo.connect(d); d.connect(o.frequency); lfo.start(t); lfo.stop(t + dur + .05);
+  }
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + Math.max(.09, dur) + .05);
+}
 let mStep = 0, mNext = 0, musicOn = false;
 function musicStart() { musicOn = true; mStep = 0; mNext = AC ? AC.currentTime + 0.08 : 0; }
 function musicResume() { musicOn = true; mNext = AC ? AC.currentTime + 0.05 : 0; }
@@ -302,14 +332,30 @@ function musicTick() {
   if (mNext < now) mNext = now + 0.05;
   while (mNext < now + 0.2) { playStep(mStep, mNext); mNext += STEP_T; mStep++; }
 }
-function playStep(s, t) {
+function playStep(n, t) {
   if (muted) return;
-  const bar = Math.floor(s / 16) % 4, st = s % 16;
-  if (st % 4 === 0) tone(150, .12, 'sine', .32, 42, t);
-  if (st === 4 || st === 12) noise(.1, .14, 'bandpass', 1800, t);
-  if (st % 2 === 1) noise(.035, .045, 'highpass', 7000, t);
-  if (BASS_STEPS.indexOf(st) >= 0) tone(mtof(ROOT[bar] + (st === 6 || st === 14 ? 12 : 0)), STEP_T * 1.7, 'triangle', .22, null, t);
-  if (st % 2 === 0) tone(mtof(CHORD[bar][ARP[(st / 2) % 8]]), STEP_T * 1.5, 'square', .04, null, t);
+  const s = n % SONG_STEPS, bar = s >> 4, st = s & 15, sec = +SONG_SECT[bar];
+  const ch = CHORD_TONES[SONG_CHORDS[s >> 3]];
+  const lead = LEAD_AT.get(s);
+  if (lead) {
+    const dur = lead[1] * STEP_T * .92;
+    pulseNote(lead[0], dur, sec === 2 ? .5 : .25, .085, t, true);
+    if (sec === 2) pulseNote(lead[0], dur, .125, .03, t + STEP_T * 1.5, true);
+  }
+  pulseNote(ch[ARP[st & 3]], STEP_T * .8, .125, sec === 1 ? .022 : .03, t, false);
+  if (!(st & 1)) tone(mtof(ch[0] + ((st >> 1) & 1 ? 12 : 0)), STEP_T * 1.7, 'triangle', .2, null, t);
+  // Trummor
+  if (sec === 0 && bar === 0) {
+    if (!(st & 3)) tone(150, .12, 'sine', .32, 42, t);
+    if (!(st & 1)) noise(.03, .04, 'highpass', 7000, t);
+    return;
+  }
+  const lastBar = bar + 1 >= SONG_SECT.length || SONG_SECT[bar + 1] !== SONG_SECT[bar];
+  if (st === 0 || st === 8 || st === 10 || (sec === 2 && st === 6)) tone(150, .12, 'sine', .32, 42, t);
+  if (lastBar && st >= 12) noise(.12, .09 + .015 * (st - 12), 'bandpass', 1800, t);
+  else if (st === 4 || st === 12) noise(.12, .14, 'bandpass', 1800, t);
+  if (!(st & 1)) noise(sec === 2 && (st & 3) === 2 ? .1 : .03, .045, 'highpass', 7000, t);
+  if (sec === 2 && st === 0 && SONG_SECT[bar - 1] !== '2') noise(.5, .08, 'highpass', 6000, t);
 }
 
 /* ---------- Mönster för hinder ---------- */
